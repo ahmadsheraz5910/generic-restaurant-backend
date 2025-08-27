@@ -8,184 +8,1526 @@
     "image_url": "/_de4759b3-096f-47f6-936a-ea291df53f9f.jpeg",
     "is_open": true
   },
-  "categories": [
-    {
-      "name": "Pizzas",
-      "handle": "pizzas",
-      "description": "Delicious pizzas made with the finest ingredients.",
-      "is_active": true
-    },
-    {
-      "name": "Falafel",
-      "handle": "falafel",
-      "description": "Our signature falafel dishes are a must-try.",
-      "is_active": true
-    },
-    {
-      "name": "Drinks",
-      "handle": "drinks",
-      "description": "Quench your thirst with our refreshing drinks.",
-      "is_active": true
-    }
+  "collections": [
+    { "name": "Burgers" },
+    { "name": "Pizza" },
+    { "name": "Pasta" },
+    { "name": "Steaks" },
+    { "name": "Salads" },
+    { "name": "Soups" },
+    { "name": "Sandwiches" },
+    { "name": "Wraps" },
+    { "name": "Chicken" },
+    { "name": "Seafood" },
+    { "name": "Sides" },
+    { "name": "Beverages" },
+    { "name": "Desserts" },
+    { "name": "Ice Cream" },
+    { "name": "Coffee" },
+    { "name": "Mexican" }
   ],
   "products": [
     {
-      "title": "Margherita Delight",
-      "handle": "margherita-delight",
-      "description": "Experience the simplicity and elegance of our Margherita Delight.",
-      "is_giftcard": false,
-      "status": "published",
-      "thumbnail": "/_1ed747de-53f1-4915-aaba-92c046039beb.jpeg",
-      "discountable": true,
-      "category": "pizzas",
+      "title": "Cheese Burger",
+      "description": "Juicy beef patty layered with melted cheddar cheese, crisp lettuce, tomato, onions, and our special burger sauce, all inside a toasted sesame bun.",
+      "collection": "Burgers",
+      "images": [
+        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1199&q=80"
+      ],
+      "options": [
+        {
+          "title": "Patty",
+          "values": ["Single Patty", "Double Patty"]
+        },
+        {
+          "title": "Cheese Choice",
+          "values": ["Cheddar", "Mozzarella"]
+        }
+      ],
       "variants": [
         {
-          "title": "Margherita Delight",
-          "manage_inventory": false,
-          "sku": "MARGHERITA-DELIGHT",
+          "title": "Single Patty / Cheddar",
+          "options": {
+            "Patty": "Single Patty",
+            "Cheese Choice": "Cheddar"
+          },
           "prices": [
             {
-              "amount": 12.99,
-              "currency_code": "usd"
-            },
+              "amount": 9,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Single Patty / Mozzarella",
+          "options": {
+            "Patty": "Single Patty",
+            "Cheese Choice": "Mozzarella"
+          },
+          "prices": [
             {
-              "amount": 9.99,
-              "currency_code": "eur"
+              "amount": 9,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Double Patty / Cheddar",
+          "options": {
+            "Patty": "Double Patty",
+            "Cheese Choice": "Cheddar"
+          },
+          "prices": [
+            {
+              "amount": 12,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Double Patty / Mozzarella",
+          "options": {
+            "Patty": "Double Patty",
+            "Cheese Choice": "Mozzarella"
+          },
+          "prices": [
+            {
+              "amount": 12,
+              "currency_code": "nzd"
             }
           ]
         }
       ]
     },
     {
-      "title": "Spicy Pepperoni Extravaganza",
-      "handle": "spicy-pepperoni-extravaganza",
-      "description": "Indulge in the bold flavors of our Spicy Pepperoni Extravaganza.",
-      "is_giftcard": false,
-      "status": "published",
-      "thumbnail": "/_35841975-1e89-4c07-adb8-208cc8c59e17.jpeg",
-      "discountable": true,
-      "category": "pizzas",
+      "title": "Fish Burger",
+      "description": "Crispy fried fish fillet topped with tartar sauce, lettuce, and cheese inside a fresh burger bun.",
+      "collection": "Burgers",
+      "images": [
+        "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80"
+      ],
+      "options": [
+        {
+          "title": "Fillet",
+          "values": ["Grilled", "Crispy"]
+        },
+        {
+          "title": "Extras",
+          "values": ["None", "Cheese", "Pickles"]
+        }
+      ],
       "variants": [
         {
-          "title": "Spicy Pepperoni Extravaganza",
-          "manage_inventory": false,
-          "sku": "SPICY-PEPPERONI-EXTRAVAGANZA",
+          "title": "Grilled / None",
+          "options": {
+            "Fillet": "Grilled",
+            "Extras": "None"
+          },
           "prices": [
             {
-              "amount": 14.99,
-              "currency_code": "usd"
-            },
+              "amount": 10,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Crispy / Cheese",
+          "options": {
+            "Fillet": "Crispy",
+            "Extras": "Cheese"
+          },
+          "prices": [
             {
-              "amount": 11.99,
-              "currency_code": "eur"
+              "amount": 11,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Crispy / Pickles",
+          "options": {
+            "Fillet": "Crispy",
+            "Extras": "Pickles"
+          },
+          "prices": [
+            {
+              "amount": 11,
+              "currency_code": "nzd"
             }
           ]
         }
       ]
     },
     {
-      "title": "Falafel Wrap Supreme",
-      "handle": "falafel-wrap-supreme",
-      "description": "Enjoy the Falafel Wrap Supreme, a delectable blend of crispy falafel balls all wrapped in a warm, soft pita.",
-      "is_giftcard": false,
-      "status": "published",
-      "thumbnail": "/_de4759b3-096f-47f6-936a-ea291df53f9f.jpeg",
-      "discountable": true,
-      "category": "falafel",
+      "title": "Margherita Pizza",
+      "description": "Classic Italian pizza with fresh mozzarella, tomato sauce, and a drizzle of olive oil topped with basil leaves.",
+      "collection": "Pizza",
+      "images": [
+        "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Small", "Medium", "Large"]
+        },
+        {
+          "title": "Extra Topping",
+          "values": ["None", "Extra Cheese", "Olives"]
+        }
+      ],
       "variants": [
         {
-          "title": "Falafel Wrap Supreme",
-          "manage_inventory": false,
-          "sku": "FALAFEL-WRAP-SUPREME",
+          "title": "Small / None",
+          "options": {
+            "Size": "Small",
+            "Extra Topping": "None"
+          },
           "prices": [
             {
-              "amount": 9.99,
-              "currency_code": "usd"
-            },
+              "amount": 12,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Medium / Extra Cheese",
+          "options": {
+            "Size": "Medium",
+            "Extra Topping": "Extra Cheese"
+          },
+          "prices": [
             {
-              "amount": 7.99,
-              "currency_code": "eur"
+              "amount": 16,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Olives",
+          "options": {
+            "Size": "Large",
+            "Extra Topping": "Olives"
+          },
+          "prices": [
+            {
+              "amount": 20,
+              "currency_code": "nzd"
             }
           ]
         }
       ]
     },
     {
-      "title": "Mediterranean Falafel Salad",
-      "handle": "mediterranean-falafel-salad",
-      "description": "Delight in the fresh and vibrant Mediterranean Falafel Salad.",
-      "is_giftcard": false,
-      "status": "published",
-      "thumbnail": "/_411c260a-d6e5-4989-9a00-1cd8b80265fb.jpeg",
-      "discountable": true,
-      "category": "falafel",
+      "title": "BBQ Chicken Pizza",
+      "description": "Smoky BBQ chicken with onions, capsicum, and melted cheese on a rich tomato base.",
+      "collection": "Pizza",
+      "images": [
+        "https://images.unsplash.com/photo-1565299507177-b0ac66763828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Medium", "Large"]
+        },
+        {
+          "title": "Add On",
+          "values": ["None", "Extra BBQ Sauce", "Cheese Burst"]
+        }
+      ],
       "variants": [
         {
-          "title": "Mediterranean Falafel Salad",
-          "manage_inventory": false,
-          "sku": "MEDITERRANEAN-FALAFEL-SALAD",
+          "title": "Medium / None",
+          "options": {
+            "Size": "Medium",
+            "Add On": "None"
+          },
           "prices": [
             {
-              "amount": 11.99,
-              "currency_code": "usd"
-            },
+              "amount": 16,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Extra BBQ Sauce",
+          "options": {
+            "Size": "Large",
+            "Add On": "Extra BBQ Sauce"
+          },
+          "prices": [
             {
-              "amount": 8.99,
-              "currency_code": "eur"
+              "amount": 20,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Cheese Burst",
+          "options": {
+            "Size": "Large",
+            "Add On": "Cheese Burst"
+          },
+          "prices": [
+            {
+              "amount": 22,
+              "currency_code": "nzd"
             }
           ]
         }
       ]
     },
     {
-      "title": "Craft Lager Beer",
-      "handle": "craft-lager-beer",
-      "description": "Refresh yourself with our Craft Lager Beer, a perfectly balanced brew with a smooth, crisp finish.",
-      "is_giftcard": false,
-      "status": "published",
-      "thumbnail": "/_ca16b6a2-9c4c-4a6a-98fa-620f12f6123f.jpeg",
-      "discountable": true,
-      "category": "drinks",
+      "title": "Spaghetti Carbonara",
+      "description": "Creamy Italian pasta with crispy bacon, parmesan cheese, egg yolk, and black pepper served with garlic bread.",
+      "collection": "Pasta",
+      "images": [
+        "https://images.unsplash.com/photo-1621996346565-e3dbc736d52e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+      ],
+      "options": [
+        {
+          "title": "Portion",
+          "values": ["Regular", "Large"]
+        },
+        {
+          "title": "Extra",
+          "values": ["None", "Extra Bacon", "Extra Parmesan"]
+        }
+      ],
       "variants": [
         {
-          "title": "Craft Lager Beer",
-          "manage_inventory": false,
-          "sku": "CRAFT-LAGER-BEER",
+          "title": "Regular / None",
+          "options": {
+            "Portion": "Regular",
+            "Extra": "None"
+          },
           "prices": [
             {
-              "amount": 5.99,
-              "currency_code": "usd"
-            },
+              "amount": 16,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Regular / Extra Bacon",
+          "options": {
+            "Portion": "Regular",
+            "Extra": "Extra Bacon"
+          },
+          "prices": [
             {
-              "amount": 4.99,
-              "currency_code": "eur"
+              "amount": 18,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Extra Parmesan",
+          "options": {
+            "Portion": "Large",
+            "Extra": "Extra Parmesan"
+          },
+          "prices": [
+            {
+              "amount": 20,
+              "currency_code": "nzd"
             }
           ]
         }
       ]
     },
     {
-      "title": "Chilled Coke Zero",
-      "handle": "chilled-coke-zero",
-      "description": "Quench your thirst with an ice-cold Coke Zero",
-      "is_giftcard": false,
-      "status": "published",
-      "thumbnail": "/_4476ce30-b852-402d-b65f-e3db54165e4c.jpeg",
-      "discountable": true,
-      "category": "drinks",
+      "title": "Penne Arrabbiata",
+      "description": "Spicy Italian pasta with tomato sauce, garlic, red chili peppers, and fresh herbs.",
+      "collection": "Pasta",
+      "images": [
+        "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1165&q=80"
+      ],
+      "options": [
+        {
+          "title": "Spice Level",
+          "values": ["Mild", "Medium", "Hot"]
+        },
+        {
+          "title": "Add Protein",
+          "values": ["None", "Grilled Chicken", "Italian Sausage"]
+        }
+      ],
       "variants": [
         {
-          "title": "Chilled Coke Zero",
-          "manage_inventory": false,
-          "sku": "CHILLED-COKE-ZERO",
+          "title": "Mild / None",
+          "options": {
+            "Spice Level": "Mild",
+            "Add Protein": "None"
+          },
           "prices": [
             {
-              "amount": 2.99,
-              "currency_code": "usd"
-            },
+              "amount": 14,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Medium / Grilled Chicken",
+          "options": {
+            "Spice Level": "Medium",
+            "Add Protein": "Grilled Chicken"
+          },
+          "prices": [
             {
-              "amount": 1.99,
-              "currency_code": "eur"
+              "amount": 18,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Hot / Italian Sausage",
+          "options": {
+            "Spice Level": "Hot",
+            "Add Protein": "Italian Sausage"
+          },
+          "prices": [
+            {
+              "amount": 19,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Grilled Ribeye Steak",
+      "description": "Premium ribeye steak grilled to perfection, served with mashed potatoes and seasonal vegetables.",
+      "collection": "Steaks",
+      "images": [
+        "https://images.unsplash.com/photo-1546833998-877b37c2e5c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+      ],
+      "options": [
+        {
+          "title": "Cooking",
+          "values": ["Medium Rare", "Medium", "Well Done"]
+        },
+        {
+          "title": "Side",
+          "values": ["Mashed Potatoes", "Grilled Vegetables", "Rice Pilaf"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Medium Rare / Mashed Potatoes",
+          "options": {
+            "Cooking": "Medium Rare",
+            "Side": "Mashed Potatoes"
+          },
+          "prices": [
+            {
+              "amount": 28,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Medium / Grilled Vegetables",
+          "options": {
+            "Cooking": "Medium",
+            "Side": "Grilled Vegetables"
+          },
+          "prices": [
+            {
+              "amount": 28,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Well Done / Rice Pilaf",
+          "options": {
+            "Cooking": "Well Done",
+            "Side": "Rice Pilaf"
+          },
+          "prices": [
+            {
+              "amount": 28,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Caesar Salad",
+      "description": "Crisp romaine lettuce with parmesan cheese, croutons, and creamy caesar dressing.",
+      "collection": "Salads",
+      "images": [
+        "https://images.unsplash.com/photo-1546793665-c74683f339c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1174&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Small", "Large"]
+        },
+        {
+          "title": "Add Protein",
+          "values": ["None", "Grilled Chicken", "Bacon Bits"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Small / None",
+          "options": {
+            "Size": "Small",
+            "Add Protein": "None"
+          },
+          "prices": [
+            {
+              "amount": 8,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Grilled Chicken",
+          "options": {
+            "Size": "Large",
+            "Add Protein": "Grilled Chicken"
+          },
+          "prices": [
+            {
+              "amount": 14,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Bacon Bits",
+          "options": {
+            "Size": "Large",
+            "Add Protein": "Bacon Bits"
+          },
+          "prices": [
+            {
+              "amount": 13,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Greek Salad",
+      "description": "Fresh cucumber, tomatoes, red onion, olives, and feta cheese with olive oil dressing.",
+      "collection": "Salads",
+      "images": [
+        "https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1184&q=80"
+      ],
+      "options": [
+        {
+          "title": "Cheese Amount",
+          "values": ["Regular Feta", "Extra Feta"]
+        },
+        {
+          "title": "Dressing",
+          "values": ["Olive Oil", "Balsamic", "Lemon Herb"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Regular Feta / Olive Oil",
+          "options": {
+            "Cheese Amount": "Regular Feta",
+            "Dressing": "Olive Oil"
+          },
+          "prices": [
+            {
+              "amount": 10,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Extra Feta / Balsamic",
+          "options": {
+            "Cheese Amount": "Extra Feta",
+            "Dressing": "Balsamic"
+          },
+          "prices": [
+            {
+              "amount": 12,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Regular Feta / Lemon Herb",
+          "options": {
+            "Cheese Amount": "Regular Feta",
+            "Dressing": "Lemon Herb"
+          },
+          "prices": [
+            {
+              "amount": 10,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Tomato Basil Soup",
+      "description": "Rich and creamy tomato soup with fresh basil, served with crusty bread.",
+      "collection": "Soups",
+      "images": [
+        "https://images.unsplash.com/photo-1547592166-23ac45744acd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Cup", "Bowl"]
+        },
+        {
+          "title": "Add On",
+          "values": ["None", "Grilled Cheese", "Croutons"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Cup / None",
+          "options": {
+            "Size": "Cup",
+            "Add On": "None"
+          },
+          "prices": [
+            {
+              "amount": 6,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Bowl / Grilled Cheese",
+          "options": {
+            "Size": "Bowl",
+            "Add On": "Grilled Cheese"
+          },
+          "prices": [
+            {
+              "amount": 12,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Bowl / Croutons",
+          "options": {
+            "Size": "Bowl",
+            "Add On": "Croutons"
+          },
+          "prices": [
+            {
+              "amount": 9,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Club Sandwich",
+      "description": "Triple-decker sandwich with turkey, bacon, lettuce, tomato, and mayo on toasted bread.",
+      "collection": "Sandwiches",
+      "images": [
+        "https://images.unsplash.com/photo-1567234669019-af61c2b93905?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+      ],
+      "options": [
+        {
+          "title": "Bread",
+          "values": ["White", "Multigrain", "Sourdough"]
+        },
+        {
+          "title": "Side",
+          "values": ["Chips", "Fries", "Salad"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "White / Chips",
+          "options": {
+            "Bread": "White",
+            "Side": "Chips"
+          },
+          "prices": [
+            {
+              "amount": 13,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Multigrain / Fries",
+          "options": {
+            "Bread": "Multigrain",
+            "Side": "Fries"
+          },
+          "prices": [
+            {
+              "amount": 15,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Sourdough / Salad",
+          "options": {
+            "Bread": "Sourdough",
+            "Side": "Salad"
+          },
+          "prices": [
+            {
+              "amount": 16,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chicken Wrap",
+      "description": "Grilled chicken strips wrapped with lettuce, tomato, cucumber, and creamy garlic sauce inside a soft tortilla.",
+      "collection": "Wraps",
+      "images": [
+        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1181&q=80"
+      ],
+      "options": [
+        {
+          "title": "Style",
+          "values": ["Grilled", "Crispy"]
+        },
+        {
+          "title": "Add On",
+          "values": ["None", "Fries", "Cheese"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Grilled / None",
+          "options": {
+            "Style": "Grilled",
+            "Add On": "None"
+          },
+          "prices": [
+            {
+              "amount": 11,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Grilled / Fries",
+          "options": {
+            "Style": "Grilled",
+            "Add On": "Fries"
+          },
+          "prices": [
+            {
+              "amount": 13,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Crispy / Cheese",
+          "options": {
+            "Style": "Crispy",
+            "Add On": "Cheese"
+          },
+          "prices": [
+            {
+              "amount": 13,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Fried Chicken Bucket",
+      "description": "Golden fried chicken pieces coated with a secret blend of 11 herbs and spices. Served hot and crispy.",
+      "collection": "Chicken",
+      "images": [
+        "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+      ],
+      "options": [
+        {
+          "title": "Portion",
+          "values": ["4 Pieces", "6 Pieces", "10 Pieces"]
+        },
+        {
+          "title": "Spice Level",
+          "values": ["Mild", "Hot"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "4 Pieces / Mild",
+          "options": {
+            "Portion": "4 Pieces",
+            "Spice Level": "Mild"
+          },
+          "prices": [
+            {
+              "amount": 14,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "6 Pieces / Hot",
+          "options": {
+            "Portion": "6 Pieces",
+            "Spice Level": "Hot"
+          },
+          "prices": [
+            {
+              "amount": 18,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "10 Pieces / Mild",
+          "options": {
+            "Portion": "10 Pieces",
+            "Spice Level": "Mild"
+          },
+          "prices": [
+            {
+              "amount": 24,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Grilled Salmon",
+      "description": "Fresh Atlantic salmon fillet grilled with lemon herbs, served with quinoa and steamed broccoli.",
+      "collection": "Seafood",
+      "images": [
+        "https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1187&q=80"
+      ],
+      "options": [
+        {
+          "title": "Preparation",
+          "values": ["Grilled", "Pan Seared", "Blackened"]
+        },
+        {
+          "title": "Side",
+          "values": ["Quinoa", "Rice", "Mashed Potatoes"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Grilled / Quinoa",
+          "options": {
+            "Preparation": "Grilled",
+            "Side": "Quinoa"
+          },
+          "prices": [
+            {
+              "amount": 24,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Pan Seared / Rice",
+          "options": {
+            "Preparation": "Pan Seared",
+            "Side": "Rice"
+          },
+          "prices": [
+            {
+              "amount": 24,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Blackened / Mashed Potatoes",
+          "options": {
+            "Preparation": "Blackened",
+            "Side": "Mashed Potatoes"
+          },
+          "prices": [
+            {
+              "amount": 26,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "French Fries",
+      "description": "Golden, crispy fries lightly salted and served hot.",
+      "collection": "Sides",
+      "images": [
+        "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Regular", "Large"]
+        },
+        {
+          "title": "Seasoning",
+          "values": ["Salted", "Peri Peri", "Cheese"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Regular / Salted",
+          "options": {
+            "Size": "Regular",
+            "Seasoning": "Salted"
+          },
+          "prices": [
+            {
+              "amount": 5,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Peri Peri",
+          "options": {
+            "Size": "Large",
+            "Seasoning": "Peri Peri"
+          },
+          "prices": [
+            {
+              "amount": 7,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Cheese",
+          "options": {
+            "Size": "Large",
+            "Seasoning": "Cheese"
+          },
+          "prices": [
+            {
+              "amount": 8,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Onion Rings",
+      "description": "Crispy beer-battered onion rings served with ranch dipping sauce.",
+      "collection": "Sides",
+      "images": [
+        "https://images.unsplash.com/photo-1639024471283-03518883512d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1332&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Regular", "Large"]
+        },
+        {
+          "title": "Dipping Sauce",
+          "values": ["Ranch", "BBQ", "Spicy Mayo"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Regular / Ranch",
+          "options": {
+            "Size": "Regular",
+            "Dipping Sauce": "Ranch"
+          },
+          "prices": [
+            {
+              "amount": 6,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / BBQ",
+          "options": {
+            "Size": "Large",
+            "Dipping Sauce": "BBQ"
+          },
+          "prices": [
+            {
+              "amount": 8,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Spicy Mayo",
+          "options": {
+            "Size": "Large",
+            "Dipping Sauce": "Spicy Mayo"
+          },
+          "prices": [
+            {
+              "amount": 8,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chocolate Milkshake",
+      "description": "Rich and creamy chocolate milkshake topped with whipped cream and chocolate drizzle.",
+      "collection": "Beverages",
+      "images": [
+        "https://images.unsplash.com/photo-1572490122747-3968b75cc699?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1587&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Small", "Medium", "Large"]
+        },
+        {
+          "title": "Topping",
+          "values": ["None", "Extra Cream", "Choco Chips"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Small / None",
+          "options": {
+            "Size": "Small",
+            "Topping": "None"
+          },
+          "prices": [
+            {
+              "amount": 6,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Medium / Extra Cream",
+          "options": {
+            "Size": "Medium",
+            "Topping": "Extra Cream"
+          },
+          "prices": [
+            {
+              "amount": 8,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Choco Chips",
+          "options": {
+            "Size": "Large",
+            "Topping": "Choco Chips"
+          },
+          "prices": [
+            {
+              "amount": 10,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Fresh Orange Juice",
+      "description": "Freshly squeezed orange juice served chilled.",
+      "collection": "Beverages",
+      "images": [
+        "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1325&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Small", "Large"]
+        },
+        {
+          "title": "Style",
+          "values": ["Regular", "With Pulp", "No Pulp"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Small / Regular",
+          "options": {
+            "Size": "Small",
+            "Style": "Regular"
+          },
+          "prices": [
+            {
+              "amount": 4,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / With Pulp",
+          "options": {
+            "Size": "Large",
+            "Style": "With Pulp"
+          },
+          "prices": [
+            {
+              "amount": 6,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / No Pulp",
+          "options": {
+            "Size": "Large",
+            "Style": "No Pulp"
+          },
+          "prices": [
+            {
+              "amount": 6,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Cheesecake Slice",
+      "description": "Smooth and creamy cheesecake with a buttery biscuit base, topped with strawberry glaze.",
+      "collection": "Desserts",
+      "images": [
+        "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+      ],
+      "options": [
+        {
+          "title": "Flavor",
+          "values": ["Strawberry", "Blueberry", "Chocolate"]
+        },
+        {
+          "title": "Topping",
+          "values": ["None", "Whipped Cream"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Strawberry / None",
+          "options": {
+            "Flavor": "Strawberry",
+            "Topping": "None"
+          },
+          "prices": [
+            {
+              "amount": 7,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Blueberry / Whipped Cream",
+          "options": {
+            "Flavor": "Blueberry",
+            "Topping": "Whipped Cream"
+          },
+          "prices": [
+            {
+              "amount": 8,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Chocolate / None",
+          "options": {
+            "Flavor": "Chocolate",
+            "Topping": "None"
+          },
+          "prices": [
+            {
+              "amount": 8,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chocolate Brownie",
+      "description": "Rich, fudgy chocolate brownie served warm with vanilla ice cream.",
+      "collection": "Desserts",
+      "images": [
+        "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80"
+      ],
+      "options": [
+        {
+          "title": "Temperature",
+          "values": ["Warm", "Room Temperature"]
+        },
+        {
+          "title": "Add On",
+          "values": ["None", "Vanilla Ice Cream", "Chocolate Sauce"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Warm / None",
+          "options": {
+            "Temperature": "Warm",
+            "Add On": "None"
+          },
+          "prices": [
+            {
+              "amount": 6,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Warm / Vanilla Ice Cream",
+          "options": {
+            "Temperature": "Warm",
+            "Add On": "Vanilla Ice Cream"
+          },
+          "prices": [
+            {
+              "amount": 9,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Room Temperature / Chocolate Sauce",
+          "options": {
+            "Temperature": "Room Temperature",
+            "Add On": "Chocolate Sauce"
+          },
+          "prices": [
+            {
+              "amount": 7,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Vanilla Ice Cream",
+      "description": "Premium vanilla ice cream served in a bowl with your choice of toppings.",
+      "collection": "Ice Cream",
+      "images": [
+        "https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1227&q=80"
+      ],
+      "options": [
+        {
+          "title": "Scoops",
+          "values": ["Single", "Double", "Triple"]
+        },
+        {
+          "title": "Topping",
+          "values": [
+            "None",
+            "Chocolate Chips",
+            "Caramel Sauce",
+            "Fresh Berries"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Single / None",
+          "options": {
+            "Scoops": "Single",
+            "Topping": "None"
+          },
+          "prices": [
+            {
+              "amount": 5,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Double / Chocolate Chips",
+          "options": {
+            "Scoops": "Double",
+            "Topping": "Chocolate Chips"
+          },
+          "prices": [
+            {
+              "amount": 8,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Triple / Caramel Sauce",
+          "options": {
+            "Scoops": "Triple",
+            "Topping": "Caramel Sauce"
+          },
+          "prices": [
+            {
+              "amount": 11,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Double / Fresh Berries",
+          "options": {
+            "Scoops": "Double",
+            "Topping": "Fresh Berries"
+          },
+          "prices": [
+            {
+              "amount": 9,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Espresso",
+      "description": "Rich, bold espresso shot made from premium Italian coffee beans.",
+      "collection": "Coffee",
+      "images": [
+        "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80"
+      ],
+      "options": [
+        {
+          "title": "Shots",
+          "values": ["Single", "Double"]
+        },
+        {
+          "title": "Style",
+          "values": ["Regular", "Decaf", "Extra Strong"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Single / Regular",
+          "options": {
+            "Shots": "Single",
+            "Style": "Regular"
+          },
+          "prices": [
+            {
+              "amount": 3.5,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Double / Regular",
+          "options": {
+            "Shots": "Double",
+            "Style": "Regular"
+          },
+          "prices": [
+            {
+              "amount": 4.5,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Single / Extra Strong",
+          "options": {
+            "Shots": "Single",
+            "Style": "Extra Strong"
+          },
+          "prices": [
+            {
+              "amount": 4,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Cappuccino",
+      "description": "Classic Italian coffee with espresso, steamed milk, and a thick layer of milk foam.",
+      "collection": "Coffee",
+      "images": [
+        "https://images.unsplash.com/photo-1572442388796-11668a67e53d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1184&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Regular", "Large"]
+        },
+        {
+          "title": "Milk Type",
+          "values": ["Whole Milk", "Oat Milk", "Almond Milk"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Regular / Whole Milk",
+          "options": {
+            "Size": "Regular",
+            "Milk Type": "Whole Milk"
+          },
+          "prices": [
+            {
+              "amount": 4.5,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Oat Milk",
+          "options": {
+            "Size": "Large",
+            "Milk Type": "Oat Milk"
+          },
+          "prices": [
+            {
+              "amount": 6,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Regular / Almond Milk",
+          "options": {
+            "Size": "Regular",
+            "Milk Type": "Almond Milk"
+          },
+          "prices": [
+            {
+              "amount": 5,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Fish Tacos",
+      "description": "Grilled fish served in soft corn tortillas with cabbage slaw, pico de gallo, and chipotle mayo.",
+      "collection": "Mexican",
+      "images": [
+        "https://images.unsplash.com/photo-1565299585323-38174c4a6471?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1180&q=80"
+      ],
+      "options": [
+        {
+          "title": "Fish Type",
+          "values": ["Mahi Mahi", "Cod", "Salmon"]
+        },
+        {
+          "title": "Quantity",
+          "values": ["2 Tacos", "3 Tacos"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Mahi Mahi / 2 Tacos",
+          "options": {
+            "Fish Type": "Mahi Mahi",
+            "Quantity": "2 Tacos"
+          },
+          "prices": [
+            {
+              "amount": 14,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Cod / 3 Tacos",
+          "options": {
+            "Fish Type": "Cod",
+            "Quantity": "3 Tacos"
+          },
+          "prices": [
+            {
+              "amount": 17,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Salmon / 2 Tacos",
+          "options": {
+            "Fish Type": "Salmon",
+            "Quantity": "2 Tacos"
+          },
+          "prices": [
+            {
+              "amount": 16,
+              "currency_code": "nzd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chicken Quesadilla",
+      "description": "Grilled chicken and melted cheese in a crispy flour tortilla, served with sour cream and guacamole.",
+      "collection": "Mexican",
+      "images": [
+        "https://images.unsplash.com/photo-1618040996337-56904b7850b9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+      ],
+      "options": [
+        {
+          "title": "Size",
+          "values": ["Regular", "Large"]
+        },
+        {
+          "title": "Extras",
+          "values": ["None", "Extra Cheese", "Jalapeños"]
+        }
+      ],
+      "variants": [
+        {
+          "title": "Regular / None",
+          "options": {
+            "Size": "Regular",
+            "Extras": "None"
+          },
+          "prices": [
+            {
+              "amount": 12,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Large / Extra Cheese",
+          "options": {
+            "Size": "Large",
+            "Extras": "Extra Cheese"
+          },
+          "prices": [
+            {
+              "amount": 16,
+              "currency_code": "nzd"
+            }
+          ]
+        },
+        {
+          "title": "Regular / Jalapeños",
+          "options": {
+            "Size": "Regular",
+            "Extras": "Jalapeños"
+          },
+          "prices": [
+            {
+              "amount": 13,
+              "currency_code": "nzd"
             }
           ]
         }

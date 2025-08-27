@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "build": "medusa build",
-    "seed": "medusa exec ./src/scripts/seed.ts",
+    "seed-once": "medusa exec ./src/scripts/seed-once.ts",
+    "seed-data": "medusa exec ./src/scripts/seed-data.ts",
     "start": "medusa start",
     "dev": "medusa develop",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
