@@ -1,35 +1,33 @@
-import { 
-  DropdownMenu,
-  IconButton,
-  clx,
-} from "@medusajs/ui"
-import { EllipsisHorizontal } from "@medusajs/icons"
-import { Link } from "react-router-dom"
+import { DropdownMenu, IconButton, clx } from "@medusajs/ui";
+import { EllipsisHorizontal } from "@medusajs/icons";
+import { Link } from "react-router-dom";
+import React from "react";
 
 export type Action = {
-  icon: React.ReactNode
-  label: string
-  disabled?: boolean
+  icon: React.ReactNode;
+  label: string;
+  disabled?: boolean;
 } & (
   | {
-      to: string
-      onClick?: never
+      to: string;
+      onClick?: never;
     }
   | {
-      onClick: () => void
-      to?: never
+      onClick: () => void;
+      to?: never;
     }
-)
+);
 
 export type ActionGroup = {
-  actions: Action[]
-}
+  actions: Action[];
+};
 
 export type ActionMenuProps = {
-  groups: ActionGroup[]
-}
+  groups?: ActionGroup[];
+  children?: React.ReactNode | React.ReactNode[];
+};
 
-export const ActionMenu = ({ groups }: ActionMenuProps) => {
+export const ActionMenu = ({ groups = [], children }: ActionMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger asChild>
@@ -40,10 +38,10 @@ export const ActionMenu = ({ groups }: ActionMenuProps) => {
       <DropdownMenu.Content>
         {groups.map((group, index) => {
           if (!group.actions.length) {
-            return null
+            return null;
           }
 
-          const isLast = index === groups.length - 1
+          const isLast = index === groups.length - 1;
 
           return (
             <DropdownMenu.Group key={index}>
@@ -54,8 +52,8 @@ export const ActionMenu = ({ groups }: ActionMenuProps) => {
                       disabled={action.disabled}
                       key={index}
                       onClick={(e) => {
-                        e.stopPropagation()
-                        action.onClick()
+                        e.stopPropagation();
+                        action.onClick();
                       }}
                       className={clx(
                         "[&_svg]:text-ui-fg-subtle flex items-center gap-x-2",
@@ -67,7 +65,7 @@ export const ActionMenu = ({ groups }: ActionMenuProps) => {
                       {action.icon}
                       <span>{action.label}</span>
                     </DropdownMenu.Item>
-                  )
+                  );
                 }
 
                 return (
@@ -88,13 +86,33 @@ export const ActionMenu = ({ groups }: ActionMenuProps) => {
                       </Link>
                     </DropdownMenu.Item>
                   </div>
-                )
+                );
               })}
               {!isLast && <DropdownMenu.Separator />}
             </DropdownMenu.Group>
-          )
+          );
         })}
+        {children}
       </DropdownMenu.Content>
     </DropdownMenu>
-  )
-}
+  );
+};
+
+export const ActionMenuItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenu.Item>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenu.Item>
+>(({ className, ...props }, ref) => {
+  return (
+    <DropdownMenu.Item
+      className={clx(
+        "[&_svg]:text-ui-fg-subtle flex items-center gap-x-2",
+        {
+          "[&_svg]:text-ui-fg-disabled": props.disabled,
+        },
+        className
+      )}
+      ref={ref}
+      {...props}
+    />
+  );
+});
