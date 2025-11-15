@@ -35,6 +35,7 @@ export interface BaseAddonVariant {
   title: string;
   manage_inventory: boolean | null;
   variant_rank: number | null;
+  addon_id: string;
   metadata: Record<string, unknown> | null;
   
 }

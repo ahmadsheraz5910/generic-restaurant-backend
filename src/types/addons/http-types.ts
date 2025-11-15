@@ -19,7 +19,9 @@ import {
 /**
  * Addon
  */
-export type AdminAddon = BaseAddon;
+export type AdminAddon = BaseAddon & {
+  variants: AdminAddonVariant[] | null;
+};
 export interface AdminAddonResponse {
   addon: AdminAddon;
 }
@@ -40,7 +42,10 @@ export interface AdminCreateAddon {
 export interface AdminUpdateAddon {
   title?: string;
   handle?: string;
+  thumbnail?: string;
+  status?: AdminAddonStatus;
   metadata?: Record<string, any> | null;
+  variants?: (AdminCreateAddonVariant | AdminUpdateAddonVariant)[];
 }
 
 /**
@@ -72,9 +77,6 @@ export interface AdminUpdateAddonVariant
 export interface AdminAddonVariantDeleteResponse
   extends DeleteResponseWithParent<"addon_variant", AdminAddon> {}
 
-
-
-
 /**
  * AddonGroup
  */
@@ -90,12 +92,12 @@ interface AddonGroup {
 export interface BaseAddonGroupListParams
   extends FindParams,
     BaseFilterable<BaseAddonGroupListParams> {
-  q?: string
-  id?: string | string[]
-  handle?: string | string[]
-  title?: string | string[]
-  created_at?: OperatorMap<string>
-  updated_at?: OperatorMap<string>
+  q?: string;
+  id?: string | string[];
+  handle?: string | string[];
+  title?: string | string[];
+  created_at?: OperatorMap<string>;
+  updated_at?: OperatorMap<string>;
 }
 export interface AdminAddonGroupsListParams extends BaseAddonGroupListParams {}
 export interface AdminAddonGroupsListResponse
@@ -106,5 +108,5 @@ export interface AdminAddonGroupsListResponse
 export interface AdminAddonGroupResponse {
   addon_group: AddonGroup;
 }
-export interface AdminAddonGroupDeleteResponse extends DeleteResponse<"addon_group"> {
-}
+export interface AdminAddonGroupDeleteResponse
+  extends DeleteResponse<"addon_group"> {}
