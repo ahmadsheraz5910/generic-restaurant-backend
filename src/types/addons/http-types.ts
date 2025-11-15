@@ -80,7 +80,7 @@ export interface AdminAddonVariantDeleteResponse
 /**
  * AddonGroup
  */
-interface AddonGroup {
+interface BaseAddonGroup {
   id: string;
   title: string;
   handle: string;
@@ -99,14 +99,25 @@ export interface BaseAddonGroupListParams
   created_at?: OperatorMap<string>;
   updated_at?: OperatorMap<string>;
 }
+
+export interface AdminAddonGroup extends BaseAddonGroup {}
 export interface AdminAddonGroupsListParams extends BaseAddonGroupListParams {}
 export interface AdminAddonGroupsListResponse
   extends PaginatedResponse<{
-    addon_groups: AddonGroup[];
+    addon_groups: BaseAddonGroup[];
   }> {}
 
 export interface AdminAddonGroupResponse {
-  addon_group: AddonGroup;
+  addon_group: BaseAddonGroup;
 }
 export interface AdminAddonGroupDeleteResponse
   extends DeleteResponse<"addon_group"> {}
+
+export interface AdminUpdateAddonGroup {
+  title?: string;
+  handle?: string;
+}
+export interface AdminCreateAddonGroup {
+  title: string;
+  handle?: string;
+}
