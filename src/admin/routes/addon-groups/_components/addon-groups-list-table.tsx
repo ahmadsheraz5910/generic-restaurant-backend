@@ -53,6 +53,7 @@ export const AddonGroupsListTable = () => {
         pageSize={PAGE_SIZE}
         filters={filters}
         enableSearch
+        rowHref={(row) => `/addon-groups/${row.id}`}
         enablePagination
         isLoading={isLoading}
       >
