@@ -4,15 +4,18 @@ import {
   deepCopy,
   InjectManager,
   InjectTransactionManager,
+  isDefined,
+  isPresent,
   isString,
   MedusaContext,
   MedusaError,
   MedusaService,
+  removeUndefined,
 } from "@medusajs/framework/utils";
 import AddonGroup from "./models/addon-group";
 import Addon from "./models/addon";
 import AddonVariant from "./models/addon-variant";
-import { AddonModuleTypes } from ".";
+import * as AddonModuleTypes from "./types";
 import { Context, DAL, InferEntityType } from "@medusajs/framework/types";
 import { EntityManager, wrap } from "@mikro-orm/core";
 
@@ -153,5 +156,98 @@ export default class AddonModuleService extends MedusaService({
       updated = await this.updateAddonVariants(forUpdate);
     }
     return [...created, ...updated];
+  }
+
+  async updateAddonGroupsDeep(
+    idOrSelector: string | Record<string, any>,
+    data: AddonModuleTypes.UpdateAddonGroupDTO,
+    @MedusaContext() sharedContext?: Context<EntityManager>
+  ) {
+    let normalizedData: (AddonModuleTypes.UpdateAddonGroupDTO & {
+      id: string;
+      addons?: { id: string }[];
+    })[] = [];
+    if (isString(idOrSelector)) {
+      await this.retrieveAddonGroup(idOrSelector, {}, sharedContext);
+      const addons = data.addon_ids?.map((id) => ({ id })) ?? [];
+      delete data.addon_ids;
+      normalizedData = [
+        {
+          id: idOrSelector,
+          ...data,
+          addons,
+        },
+      ];
+    } else {
+      const addonGroups = await this.listAddonGroups(
+        idOrSelector,
+        {},
+        sharedContext
+      );
+      const addons = data.addon_ids?.map((id) => ({ id })) ?? [];
+      delete data.addon_ids;
+      normalizedData = addonGroups.map((addonGroup) => ({
+        id: addonGroup.id,
+        ...data,
+        addons,
+      }));
+    }
+
+    const updatedAddonGroups = await this.updateAddonGroups(
+      normalizedData.map((ad) => removeUndefined({ ...ad, addons: undefined })),
+      sharedContext
+    );
+
+    /**
+     * Linking the addons to the addon groups
+     */
+    const addonGroups: InferEntityType<typeof AddonGroup>[] = [];
+    const toUpdateAddon: {
+      selector: AddonModuleTypes.FilterableAddonProps;
+      data: AddonModuleTypes.UpdateAddonDTO;
+    }[] = [];
+
+    for (const addonGroup of updatedAddonGroups) {
+      const input = normalizedData.find((ag) => ag.id === addonGroup.id);
+      const addonsToUpdate = input?.addons ?? [];
+      const addonIds = addonsToUpdate.map((ad) => ad.id);
+      const dissociateSelector = {
+        addon_group_id: addonGroup.id,
+      };
+      const associateSelector = {};
+      if (isDefined(addonIds)) {
+        dissociateSelector["id"] = { $nin: addonIds };
+        associateSelector["id"] = { $in: addonIds };
+      }
+
+      if (isPresent(dissociateSelector["id"])) {
+        toUpdateAddon.push({
+          selector: dissociateSelector,
+          data: {
+            addon_group_id: null,
+          },
+        });
+      }
+
+      if (isPresent(associateSelector["id"])) {
+        toUpdateAddon.push({
+          selector: associateSelector,
+          data: {
+            addon_group_id: addonGroup.id,
+          },
+        });
+      }
+
+      addonGroups.push({
+        ...addonGroup,
+        addons: addonsToUpdate,
+      } as InferEntityType<typeof AddonGroup>);
+    }
+
+    if (toUpdateAddon.length) {
+      await this.updateAddons(toUpdateAddon, sharedContext);
+    }
+
+    return addonGroups;
   }
 }

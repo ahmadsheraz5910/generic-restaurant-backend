@@ -33,12 +33,11 @@ export type UpdateAddonGroupDTO = {
   title?: string;
   handle?: string;
   //In one-to-many relationship, we can only associate/dissociate from the entity that has belongs-to clause
-  // - addon_ids?: string[];
+  // Since I have implemented updateAddonGroupsDeep, this can be added as an optional field
+  addon_ids?: string[];
 };
 
-export type UpsertAddonGroupDTO =
-  | CreateAddonGroupDTO
-  | (UpdateAddonGroupDTO);
+export type UpsertAddonGroupDTO = CreateAddonGroupDTO | UpdateAddonGroupDTO;
 
 export type FilterableAddonGroupProps = {
   q?: string;
@@ -69,6 +68,7 @@ export interface FilterableAddonProps
     | OperatorMap<ProductStatus | ProductStatus[]>;
   title?: string | string[] | OperatorMap<string | string[]>;
   handle?: string | string[] | OperatorMap<string | string[]>;
+  addon_group_id?: string | string[] | OperatorMap<string | string[]>;
   id?: string | string[] | OperatorMap<string | string[]>;
   created_at?: string | OperatorMap<string>;
   updated_at?: string | OperatorMap<string>;
