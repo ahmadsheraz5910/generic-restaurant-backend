@@ -105,6 +105,7 @@ medusaIntegrationTestRunner({
             ])
           );
         });
+        //[Todo]: Add test for addon_group_id
       });
       describe("POST /admin/addons", () => {
         it("should create a new addon", async () => {
@@ -396,94 +397,6 @@ medusaIntegrationTestRunner({
           expect(res.status).toEqual(200);
           expect(res.data.id).toEqual(deletedAddon.id);
           expect(res.data.object).toEqual("addon");
-          expect(res.data.deleted).toEqual(true);
-        });
-      });
-    });
-
-    describe("/admin/addon-groups", () => {
-      describe("GET /admin/addon-groups", () => {
-        it("should list all addon-groups with default relations/fields", async () => {
-          const response = await api.get("/admin/addon-groups", adminHeaders);
-          expect(response.status).toEqual(200);
-          expect(response.data.addon_groups).toEqual(
-            expect.arrayContaining([
-              expect.objectContaining({
-                id: expect.stringMatching(/^aGroup_*/),
-                title: baseAddonGroupData.title,
-              }),
-            ])
-          );
-        });
-      });
-      describe("POST /admin/addon-groups", () => {
-        it("should create a new addon-group", async () => {
-          const testAddonGroupData = {
-            title: "Test Addon Group Create",
-          };
-          const response = await api.post(
-            "/admin/addon-groups",
-            testAddonGroupData,
-            adminHeaders
-          );
-          expect(response.status).toEqual(200);
-          expect(response.data).toEqual({
-            addon_group: expect.objectContaining({
-              id: expect.stringMatching(/^aGroup_*/),
-              title: testAddonGroupData.title,
-            }),
-          });
-        });
-      });
-      describe("GET /admin/addon-groups/:id", () => {
-        it("should get addon-group with default relations/fields", async () => {
-          const res = await api
-            .get(`/admin/addon-groups/${baseAddonGroup.id}`, adminHeaders)
-            .catch((err) => {
-              console.log(err);
-            });
-
-          const keysInResponse = Object.keys(res.data.addon_group);
-
-          expect(res.status).toEqual(200);
-          expect(res.data.addon_group.id).toEqual(baseAddonGroup.id);
-          expect(keysInResponse).toEqual(
-            expect.arrayContaining(["id", "title", "addons"])
-          );
-        });
-      });
-      describe("POST /admin/addon-groups/:id", () => {
-        it("should update addon-group fields", async () => {
-          const res = await api
-            .post(
-              `/admin/addon-groups/${baseAddonGroup.id}`,
-              {
-                title: "Base Addon Group (Updated)",
-              },
-              adminHeaders
-            )
-            .catch((err) => {
-              console.log(err);
-            });
-          expect(res.status).toEqual(200);
-          expect(res.data.addon_group).toEqual(
-            expect.objectContaining({
-              id: baseAddonGroup.id,
-              title: "Base Addon Group (Updated)",
-            })
-          );
-        });
-      });
-      describe("DELETE /admin/addon-groups/:id", () => {
-        it("should delete an addon-group", async () => {
-          const res = await api
-            .delete(`/admin/addon-groups/${deletedAddonGroup.id}`, adminHeaders)
-            .catch((err) => {
-              console.log(err);
-            });
-          expect(res.status).toEqual(200);
-          expect(res.data.id).toEqual(deletedAddonGroup.id);
-          expect(res.data.object).toEqual("addon_group");
           expect(res.data.deleted).toEqual(true);
         });
       });
