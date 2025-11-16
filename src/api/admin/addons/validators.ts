@@ -11,28 +11,26 @@ import {
 } from "@medusajs/medusa/api/utils/validators";
 import { z } from "zod";
 
-
 /**
  * Addons variant
  */
-export const AdminGetAddonVariantParams = createSelectParams()
+export const AdminGetAddonVariantParams = createSelectParams();
 export const AdminGetAddonVariantsParamsFields = z.object({
   q: z.string().optional(),
   id: z.union([z.string(), z.array(z.string())]).optional(),
   created_at: createOperatorMap().optional(),
   updated_at: createOperatorMap().optional(),
   deleted_at: createOperatorMap().optional(),
-})
+});
 export type AdminGetAddonVariantsParamsType = z.infer<
   typeof AdminGetAddonVariantsParams
->
+>;
 export const AdminGetAddonVariantsParams = createFindParams({
   offset: 0,
   limit: 50,
 })
   .merge(AdminGetAddonVariantsParamsFields)
-  .merge(applyAndAndOrOperators(AdminGetAddonVariantsParamsFields))
- 
+  .merge(applyAndAndOrOperators(AdminGetAddonVariantsParamsFields));
 
 export type AdminCreateVariantPriceType = z.infer<
   typeof AdminCreateVariantPrice
@@ -105,7 +103,6 @@ export type AdminUpdateVariantInventoryItemType = z.infer<
   typeof AdminUpdateVariantInventoryItem
 >;
 
-
 /**
  * Addon
  */
@@ -115,7 +112,11 @@ export type AdminGetAddonsParamsType = z.infer<typeof AdminGetAddonsParams>;
 export const AdminGetAddonsParams = createFindParams({
   offset: 0,
   limit: 50,
-});
+}).merge(
+  z.object({
+    addon_group_id: z.union([z.string(), z.array(z.string())]).optional()
+  })
+)
 
 export type AdminCreateAddonType = z.infer<typeof CreateAddon>;
 export const CreateAddon = z
@@ -144,6 +145,3 @@ export const UpdateAddon = z
   })
   .strict();
 export const AdminUpdateAddon = UpdateAddon;
-
-
-

@@ -14,6 +14,7 @@ export interface BaseAddonListParams
   title?: string | string[];
   handle?: string | string[];
   id?: string | string[];
+  addon_group_id?: string | string[];
   created_at?: OperatorMap<string>;
   updated_at?: OperatorMap<string>;
   deleted_at?: OperatorMap<string>;

@@ -27,6 +27,7 @@ export const GET = async (
       entity: "addon",
       scope: req.scope,
       fields: selectFields,
+      idOrFilter: req.filterableFields,
       pagination: req.queryConfig.pagination,
       withDeleted: req.queryConfig.withDeleted
     }
