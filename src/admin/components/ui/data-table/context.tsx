@@ -4,12 +4,14 @@ import { UseDataTableReturn } from "@medusajs/ui";
 
 type DataTableContextProviderProps<TData> = {
   instance: UseDataTableReturn<TData>;
+  noResults?: boolean;
+  noRecords?: boolean;
   children: React.ReactNode;
 };
 interface DataTableContextValue<TData> {
   instance: UseDataTableReturn<TData>;
-  enableColumnVisibility: boolean;
-  enableColumnOrder: boolean;
+  noResults?: boolean;
+  noRecords?: boolean;
 }
 
 const DataTableContext = React.createContext<DataTableContextValue<any> | null>(
@@ -18,14 +20,16 @@ const DataTableContext = React.createContext<DataTableContextValue<any> | null>(
 
 const DataTableContextProvider = <TData,>({
   instance,
+  noResults,
+  noRecords,
   children,
 }: DataTableContextProviderProps<TData>) => {
   return (
     <DataTableContext.Provider
       value={{
         instance,
-        enableColumnVisibility: instance.enableColumnVisibility,
-        enableColumnOrder: instance.enableColumnOrder,
+        noResults,
+        noRecords,
       }}
     >
       {children}

@@ -2,21 +2,25 @@ import {
   DataTable as UiDataTable,
   DataTableColumnDef,
   DataTableCommand,
-  DataTableEmptyStateProps,
   DataTableFilter,
-  DataTableRow,
-  DataTableRowSelectionState,
   useDataTable,
   DataTableFilteringState,
   DataTablePaginationState,
   DataTableSortingState,
 } from "@medusajs/ui";
-import React, { PropsWithChildren, useCallback, useMemo } from "react";
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQueryParams } from "../../../hooks/use-query-params";
 import DataTableContextProvider, { useDataTableContext } from "./context";
 import { DataTableFilterBar } from "./data-table-filter-bar";
+import { RowSelectionState } from "@tanstack/react-table";
+import { NoRecords, NoResults, NoResultsProps } from "../../empty-states";
 
 function transformSortingState(value: DataTableSortingState) {
   return value.desc ? `-${value.id}` : value.id;
@@ -98,20 +102,16 @@ interface DataTableProps<TData> {
   filters?: DataTableFilter[];
   commands?: DataTableCommand[];
   rowCount?: number;
-  getRowId: (row: TData) => string;
+  getRowId?: (row: TData) => string;
   rowHref?: (row: TData) => string;
-  enablePagination?: boolean;
+  enableRowSelection?: boolean;
   enableSearch?: boolean;
+  enablePagination?: boolean;
   prefix?: string;
   pageSize?: number;
-
-  rowSelection?: {
-    state: DataTableRowSelectionState;
-    onRowSelectionChange: (value: DataTableRowSelectionState) => void;
-    enableRowSelection?: boolean | ((row: DataTableRow<TData>) => boolean);
-  };
   isLoading?: boolean;
   layout?: "fill" | "auto";
+  noRecords?: Pick<NoResultsProps, "title" | "message">;
   initialColumnVisibility?: VisibilityState;
   onColumnVisibilityChange?: (visibility: VisibilityState) => void;
 }
@@ -123,14 +123,14 @@ const Root = <TData,>({
   rowCount = 0,
   getRowId,
   rowHref,
-  enablePagination = true,
-  enableSearch = true,
   prefix,
   pageSize = 10,
-  rowSelection,
   isLoading = false,
   layout = "auto",
   initialColumnVisibility = {},
+  enableSearch = true,
+  enablePagination = true,
+  enableRowSelection = true,
   onColumnVisibilityChange,
   children,
 }: PropsWithChildren<DataTableProps<TData>>) => {
@@ -140,24 +140,6 @@ const Root = <TData,>({
 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>(initialColumnVisibility);
-
-  // Update column visibility when initial visibility changes
-  React.useEffect(() => {
-    // Deep compare to check if the visibility has actually changed
-    const currentKeys = Object.keys(columnVisibility).sort();
-    const newKeys = Object.keys(initialColumnVisibility).sort();
-
-    const hasChanged =
-      currentKeys.length !== newKeys.length ||
-      currentKeys.some((key, index) => key !== newKeys[index]) ||
-      Object.entries(initialColumnVisibility).some(
-        ([key, value]) => columnVisibility[key] !== value
-      );
-
-    if (hasChanged) {
-      setColumnVisibility(initialColumnVisibility);
-    }
-  }, [initialColumnVisibility]);
 
   // Wrapper function to handle column visibility changes
   const handleColumnVisibilityChange = React.useCallback(
@@ -171,8 +153,7 @@ const Root = <TData,>({
   // Extract filter IDs for query param management
   const filterIds = useMemo(() => filters?.map((f) => f.id) ?? [], [filters]);
   const prefixedFilterIds = filterIds.map((id) => getQueryParamKey(id, prefix));
-
-  const { offset, order, q, ...filterParams } = useQueryParams(
+  const queryObject = useQueryParams(
     [
       ...filterIds,
       ...(enableSorting ? ["order"] : []),
@@ -181,12 +162,13 @@ const Root = <TData,>({
     ],
     prefix
   );
+  const { offset, order, q, ...filterParams } = queryObject;
   const [_, setSearchParams] = useSearchParams();
 
+  /** Search */
   const search = useMemo(() => {
     return q ?? "";
   }, [q]);
-
   const handleSearchChange = (value: string) => {
     setSearchParams((prev) => {
       if (value) {
@@ -199,6 +181,7 @@ const Root = <TData,>({
     });
   };
 
+  /** Pagination */
   const pagination: DataTablePaginationState = useMemo(() => {
     return offset
       ? parsePaginationState(offset, pageSize)
@@ -219,11 +202,11 @@ const Root = <TData,>({
     });
   };
 
+  /** Filtering */
   const filtering: DataTableFilteringState = useMemo(
     () => parseFilterState(filterIds, filterParams),
     [filterIds, filterParams]
   );
-
   const handleFilteringChange = (value: DataTableFilteringState) => {
     setSearchParams((prev) => {
       // Remove filters that are no longer in the state
@@ -254,9 +237,13 @@ const Root = <TData,>({
       return prev;
     });
   };
+
+  /** Sorting */
   const sorting: DataTableSortingState | null = useMemo(() => {
     return order ? parseSortingState(order) : null;
   }, [order]);
+
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const handleSortingChange = (value: DataTableSortingState) => {
     setSearchParams((prev) => {
@@ -300,7 +287,8 @@ const Root = <TData,>({
     filters,
     commands,
     rowCount,
-    getRowId,
+
+    getRowId: getRowId ?? ((row: any, idx) => row.id ?? idx),
     onRowClick: rowHref ? onRowClick : undefined,
     pagination: enablePagination
       ? {
@@ -326,13 +314,36 @@ const Root = <TData,>({
           onSearchChange: handleSearchChange,
         }
       : undefined,
-    rowSelection,
+    rowSelection: enableRowSelection
+      ? {
+          state: rowSelection,
+          onRowSelectionChange: setRowSelection,
+        }
+      : undefined,
     isLoading,
     columnVisibility: {
       state: columnVisibility,
       onColumnVisibilityChange: handleColumnVisibilityChange,
     },
   });
+
+  // Update column visibility when initial visibility changes
+  React.useEffect(() => {
+    // Deep compare to check if the visibility has actually changed
+    const currentKeys = Object.keys(columnVisibility).sort();
+    const newKeys = Object.keys(initialColumnVisibility).sort();
+
+    const hasChanged =
+      currentKeys.length !== newKeys.length ||
+      currentKeys.some((key, index) => key !== newKeys[index]) ||
+      Object.entries(initialColumnVisibility).some(
+        ([key, value]) => columnVisibility[key] !== value
+      );
+
+    if (hasChanged) {
+      setColumnVisibility(initialColumnVisibility);
+    }
+  }, [initialColumnVisibility]);
 
   return (
     <DataTableContextProvider instance={instance}>
@@ -394,11 +405,19 @@ const Search = ({ autoFocusSearch = false }: DataTableSearchProps) => {
   );
 };
 
-interface DataTableTableProps {
-  emptyState?: DataTableEmptyStateProps;
-}
-const Table = ({ emptyState }: DataTableTableProps) => {
-  return <UiDataTable.Table emptyState={emptyState} />;
+const Table = () => {
+  return (
+    <UiDataTable.Table
+      emptyState={{
+        empty: {
+          custom: <NoRecords />,
+        },
+        filtered: {
+          custom: <NoResults />,
+        },
+      }}
+    />
+  );
 };
 
 const FilterBar = () => {
