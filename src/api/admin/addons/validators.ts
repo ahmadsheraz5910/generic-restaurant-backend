@@ -114,9 +114,16 @@ export const AdminGetAddonsParams = createFindParams({
   limit: 50,
 }).merge(
   z.object({
-    addon_group_id: z.union([z.string(), z.array(z.string())]).optional()
+    q: z.string().optional(),
+    id: z.union([z.string(), z.array(z.string())]).optional(),
+    title: z.union([z.string(), z.array(z.string())]).optional(),
+    handle: z.union([z.string(), z.array(z.string())]).optional(),
+    created_at: createOperatorMap().optional(),
+    updated_at: createOperatorMap().optional(),
+    deleted_at: createOperatorMap().optional(),
+    addon_group_id: z.union([z.string(), z.array(z.string())]).optional(),
   })
-)
+);
 
 export type AdminCreateAddonType = z.infer<typeof CreateAddon>;
 export const CreateAddon = z
