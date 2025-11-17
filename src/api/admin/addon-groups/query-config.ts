@@ -6,6 +6,7 @@ export const defaultAddonGroupFields = [
   "updated_at",
   "metadata",
   "*addons",
+  "*products"
 ]
 
 export const retrieveTransformQueryConfig = {

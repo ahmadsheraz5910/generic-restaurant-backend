@@ -70,4 +70,15 @@ export const adminAddonGroupsRoutesMiddlewares: MiddlewareRoute[] = [
       ),
     ],
   },
+  {
+    method: ["POST"],
+    matcher: "/admin/addon-groups/:id/products",
+    middlewares: [
+      validateAndTransformBody(createLinkBody()),
+      validateAndTransformQuery(
+        AdminGetAddonGroupsParams,
+        QueryConfig.retrieveTransformQueryConfig
+      ),
+    ],
+  },
 ];
