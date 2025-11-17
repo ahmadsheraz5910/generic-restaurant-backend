@@ -1,11 +1,13 @@
 import { RouteFocusModal } from "../../../../components/route-focus-modal";
 import { useAddonGroup } from "../../../../hooks/api/addon-groups";
-import { useProduct } from "../../../../hooks/api/products";
 import { useParams } from "react-router";
+import AddonGroupAddonsForm from "../_components/addon-group-addons-form";
 
 const AddonGroupAddonsPage = () => {
   const { id } = useParams();
-  const { addon_group, isError, error, isLoading } = useAddonGroup(id as string);
+  const { addon_group, isError, error, isLoading } = useAddonGroup(
+    id as string
+  );
 
   if (isError) {
     throw error;
@@ -14,9 +16,9 @@ const AddonGroupAddonsPage = () => {
   return (
     <RouteFocusModal>
       {addon_group && !isLoading ? (
-        <ProductAddOnsForm
-          productId={id as string}
-          addOnCollectionIds={addOnCollectionIds}
+        <AddonGroupAddonsForm
+          addonGroupId={id as string}
+          addonGroupAddonIds={addon_group.addons.map((a) => a.id)}
         />
       ) : null}
     </RouteFocusModal>

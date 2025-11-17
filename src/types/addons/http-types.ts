@@ -108,7 +108,9 @@ export interface AdminAddonGroupsListResponse
   }> {}
 
 export interface AdminAddonGroupResponse {
-  addon_group: BaseAddonGroup;
+  addon_group: BaseAddonGroup & {
+    addons: AdminAddon[];
+  };
 }
 export interface AdminAddonGroupDeleteResponse
   extends DeleteResponse<"addon_group"> {}
@@ -120,4 +122,15 @@ export interface AdminUpdateAddonGroup {
 export interface AdminCreateAddonGroup {
   title: string;
   handle?: string;
+}
+
+export interface AdminUpdateAddonGroupAddons {
+  /**
+   * IDs of products to add to the addonGroup.
+   */
+  add?: string[]
+  /**
+   * IDs of products to remove from the addonGroup.
+   */
+  remove?: string[]
 }

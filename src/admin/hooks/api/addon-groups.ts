@@ -10,6 +10,7 @@ import {
 import { queryKeysFactory } from "../../lib/query-key-factory";
 import { sdk } from "../../lib/sdk";
 import { HttpTypes } from "../../../types/addons";
+import { addonQueryKeys } from "./addons";
 
 const ADDON_GROUPS_QUERY_KEY = "addon-groups" as const;
 export const addonGroupsQueryKeys = queryKeysFactory(ADDON_GROUPS_QUERY_KEY);
@@ -88,6 +89,39 @@ export const useUpdateAddonGroup = (
       queryClient.invalidateQueries({ queryKey: addonGroupsQueryKeys.lists() });
       queryClient.invalidateQueries({
         queryKey: addonGroupsQueryKeys.detail(id),
+      });
+
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
+export const useUpdateAddonGroupAddons = (
+  id: string,
+  options?: UseMutationOptions<
+    HttpTypes.AdminAddonGroupResponse,
+    FetchError,
+    HttpTypes.AdminUpdateAddonGroupAddons
+  >
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload) =>
+      sdk.client.fetch(`/admin/addon-groups/${id}/addons`, {
+        method: "POST",
+        body: payload,
+      }),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: addonGroupsQueryKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: addonGroupsQueryKeys.detail(id),
+      });
+      /**
+       * Invalidate addons list query to ensure that the addon-groups are updated.
+       */
+      queryClient.invalidateQueries({
+        queryKey: addonQueryKeys.lists(),
       });
 
       options?.onSuccess?.(data, variables, context);
