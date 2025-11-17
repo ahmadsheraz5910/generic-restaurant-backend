@@ -1,5 +1,5 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { PlusMini } from "@medusajs/icons";
+import {SquareTwoStack } from "@medusajs/icons";
 import { AddonGroupsListTable } from "./_components/addon-groups-list-table";
 
 const AddonGroupsPage = () => {
@@ -8,7 +8,7 @@ const AddonGroupsPage = () => {
 
 export const config = defineRouteConfig({
   label: "Addon Groups",
-  icon: PlusMini,
+  icon: SquareTwoStack,
 });
 
 export default AddonGroupsPage;

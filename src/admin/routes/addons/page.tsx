@@ -1,5 +1,5 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { PlusMini } from "@medusajs/icons";
+import { SquaresPlusSolid } from "@medusajs/icons";
 import { AddonListTable } from "./_components/addon-list-table";
 
 const AddonPage = () => {
@@ -8,7 +8,7 @@ const AddonPage = () => {
 
 export const config = defineRouteConfig({
   label: "Addons",
-  icon: PlusMini,
+  icon: SquaresPlusSolid,
 });
 
 export default AddonPage;
