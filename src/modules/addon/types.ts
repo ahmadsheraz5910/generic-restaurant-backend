@@ -25,7 +25,7 @@ export type CreateAddonGroupDTO = {
   title: string;
   handle?: string;
   //In one-to-many relationship, we can only associate/dissociate from the entity that has belongs-to clause
-  // - addon_ids?: string[];
+  addon_ids?: string[];
 };
 
 export type UpdateAddonGroupDTO = {

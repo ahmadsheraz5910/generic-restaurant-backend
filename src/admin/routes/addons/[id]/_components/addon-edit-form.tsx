@@ -22,6 +22,7 @@ type EditAddonFormProps = {
 
 const EditAddonSchema = zod.object({
   title: zod.string().min(1),
+  handle: zod.string().optional(),
   status: zod.enum(["draft", "published", "proposed", "rejected"]),
   thumbnail: MediaSchema.optional(),
 });
@@ -32,7 +33,9 @@ export const EditAddonForm = ({ addon }: EditAddonFormProps) => {
   const direction = useDocumentDirection();
   const form = useForm({
     defaultValues: {
-      ...addon,
+      title: addon.title,
+      status: addon.status,
+      handle: addon.handle,
       thumbnail: addon.thumbnail
         ? {
             url: addon.thumbnail,
@@ -45,7 +48,7 @@ export const EditAddonForm = ({ addon }: EditAddonFormProps) => {
   const { mutateAsync, isPending } = useUpdateAddon(addon.id);
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    const { title, handle, status,thumbnail, ...optional } = data;
+    const { title, handle, status, thumbnail, ...optional } = data;
 
     const nullableData = transformNullableFormData(optional);
 

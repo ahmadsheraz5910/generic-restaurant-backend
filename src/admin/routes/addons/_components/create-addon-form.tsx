@@ -64,7 +64,7 @@ export const CreateAddonForm = ({ currencyInfo }: Props) => {
       }]
     }, {
       onSuccess: ({ addon }) => {
-        //handleSuccess(`/addons/${addon.id}`)
+        handleSuccess(`/addons/${addon.id}`)
         toast.success(t("addons.createSuccess"))
       },
       onError: (error) => {

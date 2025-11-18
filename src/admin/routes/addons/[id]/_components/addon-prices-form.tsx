@@ -89,7 +89,7 @@ export const AddonPricesForm = ({
           const currencyCode = currencyCodeOrRegionId.startsWith("reg_")
             ? regionsCurrencyMap[regionId]
             : currencyCodeOrRegionId;
-          let existingId = undefined;
+          let existingId = undefined as string | undefined;
           if (regionId) {
             existingId = variants?.[ind]?.prices?.find(
               (p: any) => p.rules["region_id"] === regionId

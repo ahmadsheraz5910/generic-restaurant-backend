@@ -662,7 +662,7 @@ function getFocusableElements(ref: React.RefObject<HTMLDivElement>) {
   const shortcuts =
     currentElementIndex > 0 ? focusableElements[currentElementIndex - 1] : null
 
-  let cancel = null
+  let cancel = null as any
   for (let i = currentElementIndex + 1; i < focusableElements.length; i++) {
     if (!ref.current!.contains(focusableElements[i])) {
       cancel = focusableElements[i]

@@ -1,4 +1,3 @@
-import { updateProductsWorkflow } from "@medusajs/core-flows";
 import {
   AuthenticatedMedusaRequest,
   MedusaResponse,
@@ -8,7 +7,10 @@ import { MedusaError } from "@medusajs/framework/utils";
 import { AdminUpdateAddonType } from "../validators";
 import { deleteAddonsWorkflow } from "../../../../workflows/delete-addons";
 import { refetchEntity } from "../../../../utils/refetch-entities";
-import { AdminAddonDeleteResponse, AdminAddonResponse } from "../../../../types/addons/http-types";
+import {
+  AdminAddonDeleteResponse,
+  AdminAddonResponse,
+} from "../../../../types/addons/http-types";
 import { updateAddonsWorkflow } from "../../../../workflows/update-addons";
 import { remapAddonResponse, remapKeysForAddon } from "../helpers";
 
@@ -27,7 +29,7 @@ export const GET = async (
     throw new MedusaError(MedusaError.Types.NOT_FOUND, "Addon not found");
   }
 
-  res.status(200).json({ addon:remapAddonResponse(addon) });
+  res.status(200).json({ addon: remapAddonResponse(addon) });
 };
 
 export const POST = async (
@@ -53,17 +55,16 @@ export const POST = async (
   const { result } = await updateAddonsWorkflow(req.scope).run({
     input: {
       selector: { id: req.params.id },
+      //@ts-ignore
       update,
     },
   });
-  const addon = await refetchEntity(
-    {
-      entity: "addon",
-      idOrFilter: result[0].id,
-      scope: req.scope,
-      fields: remapKeysForAddon(req.queryConfig.fields ?? []),
-    }
-  );
+  const addon = await refetchEntity({
+    entity: "addon",
+    idOrFilter: result[0].id,
+    scope: req.scope,
+    fields: remapKeysForAddon(req.queryConfig.fields ?? []),
+  });
   res.status(200).json({ addon: remapAddonResponse(addon) });
 };
 
