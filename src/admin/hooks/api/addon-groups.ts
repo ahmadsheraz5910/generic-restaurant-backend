@@ -140,7 +140,7 @@ export const useCreateAddonGroup = (
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload) =>
-      sdk.client.fetch<HttpTypes.AdminAddonGroupResponse>(`/admin/addons`, {
+      sdk.client.fetch<HttpTypes.AdminAddonGroupResponse>(`/admin/addon-groups`, {
         method: "POST",
         body: payload,
       }),
@@ -164,7 +164,7 @@ export const useDeleteAddonGroup = (
   return useMutation({
     mutationFn: () =>
       sdk.client.fetch<HttpTypes.AdminAddonGroupDeleteResponse>(
-        `/admin/addons/${id}`,
+        `/admin/addon-groups/${id}`,
         {
           method: "DELETE",
         }
