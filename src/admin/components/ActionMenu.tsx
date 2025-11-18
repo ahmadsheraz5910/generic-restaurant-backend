@@ -24,14 +24,19 @@ export type ActionGroup = {
 
 export type ActionMenuProps = {
   groups?: ActionGroup[];
+  variant?: React.ComponentProps<typeof IconButton>["variant"];
   children?: React.ReactNode | React.ReactNode[];
 };
 
-export const ActionMenu = ({ groups = [], children }: ActionMenuProps) => {
+export const ActionMenu = ({
+  groups = [],
+  children,
+  variant = "transparent",
+}: ActionMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger asChild>
-        <IconButton size="small" variant="transparent">
+        <IconButton size="small" variant={variant}>
           <EllipsisHorizontal />
         </IconButton>
       </DropdownMenu.Trigger>

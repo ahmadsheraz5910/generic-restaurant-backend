@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../lib/query-key-factory";
 import { sdk } from "../../lib/sdk";
+import { addonGroupsQueryKeys } from "./addon-groups";
 
 const PRODUCTS_QUERY_KEY = "products" as const;
 export const productsQueryKeys = queryKeysFactory(PRODUCTS_QUERY_KEY);
@@ -346,6 +347,39 @@ export const useConfirmImportProducts = (
   return useMutation({
     mutationFn: (payload) => sdk.admin.product.confirmImport(payload),
     onSuccess: (data, variables, context) => {
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
+export const useUpdateProductAddonGroups = (
+  id: string,
+  options?: UseMutationOptions<
+    HttpTypes.AdminProductResponse,
+    FetchError,
+    HttpTypes.AdminBatchLink
+  >
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload) =>
+      sdk.client.fetch(`/admin/products/${id}/addon-groups`, {
+        method: "POST",
+        body: payload,
+      }),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: productsQueryKeys.details(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: productsQueryKeys.lists(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: addonGroupsQueryKeys.lists(),
+      });
+
       options?.onSuccess?.(data, variables, context);
     },
     ...options,

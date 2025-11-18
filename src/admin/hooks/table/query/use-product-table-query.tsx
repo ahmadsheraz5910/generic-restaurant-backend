@@ -39,7 +39,6 @@ export const useProductTableQuery = ({
     updated_at,
     category_id,
     collection_id,
-    tag_id,
     type_id,
     is_giftcard,
     status,
