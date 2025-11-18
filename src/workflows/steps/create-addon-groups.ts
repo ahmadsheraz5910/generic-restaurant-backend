@@ -1,13 +1,15 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
 import { ADDON_MODULE, AddonModuleTypes } from "../../modules/addon";
 import { kebabCase } from "@medusajs/framework/utils";
+import AddonModuleService from "../../modules/addon/service";
 
 export type CreateAddonGroupStepInput = AddonModuleTypes.CreateAddonGroupDTO[];
 
 export const createAddonGroupStep = createStep(
   "create-addon-groups-step",
   async (input: CreateAddonGroupStepInput, { container }) => {
-    const addonModuleService = container.resolve(ADDON_MODULE);
+    const addonModuleService =
+      container.resolve<AddonModuleService>(ADDON_MODULE);
     const addonGroupsToCreate = input.map((input) => {
       const handle = input.handle || kebabCase(input.title);
       return {
@@ -28,7 +30,8 @@ export const createAddonGroupStep = createStep(
     if (!addon) {
       return;
     }
-    const addonModuleService = container.resolve(ADDON_MODULE);
+    const addonModuleService =
+      container.resolve<AddonModuleService>(ADDON_MODULE);
     await addonModuleService.deleteAddonGroups(addon);
   }
 );

@@ -1,15 +1,9 @@
 import {
   BaseFilterable,
-  CreateProductDTO,
-  CreateProductWorkflowInputDTO,
   OperatorMap,
   ProductStatus,
 } from "@medusajs/framework/types";
 import { ProductUtils } from "@medusajs/framework/utils";
-import {
-  AddonStatusEnum,
-  Maybe,
-} from "../../../.medusa/types/query-entry-points";
 
 /**
  * Addon Groups
@@ -49,6 +43,7 @@ export type FilterableAddonGroupProps = {
 /**
  * Addon
  */
+export type AddonStatusEnum = ProductStatus;
 export type AddonDTO = {
   id: string | null;
   title: string;
@@ -56,7 +51,7 @@ export type AddonDTO = {
   handle: string | null;
   status: AddonStatusEnum | null;
   addonGroup: AddonGroupDTO | null;
-  variants: Maybe<AddonVariantDTO>[];
+  variants?: AddonVariantDTO[];
 };
 
 export interface FilterableAddonProps

@@ -1,13 +1,14 @@
 import { LinkWorkflowInput } from "@medusajs/framework/types";
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
 import { ADDON_MODULE } from "../../modules/addon";
+import AddonModuleService from "../../modules/addon/service";
 
 const batchLinkAddonsToAddonGroupStepId = "batch-link-addons-to-addonGroup";
 export const batchLinkAddonsToAddonGroupStep = createStep(
   batchLinkAddonsToAddonGroupStepId,
   async (data: LinkWorkflowInput, { container }) => {
     const addonGroupId = data.id;
-    const service = container.resolve(ADDON_MODULE);
+    const service = container.resolve<AddonModuleService>(ADDON_MODULE);
 
     if (!data.add?.length && !data.remove?.length) {
       return new StepResponse(void 0, null);
@@ -38,7 +39,7 @@ export const batchLinkAddonsToAddonGroupStep = createStep(
     if (!prevData) {
       return;
     }
-    const service = container.resolve(ADDON_MODULE);
+    const service = container.resolve<AddonModuleService>(ADDON_MODULE);
 
     await service.updateAddonGroupsDeep(prevData.id, {
       addon_ids: prevData.addonIds,

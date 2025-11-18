@@ -2,6 +2,7 @@ import { ProductTypes } from "@medusajs/framework/types";
 import { getSelectsAndRelationsFromObjectArray } from "@medusajs/framework/utils";
 import { StepResponse, createStep } from "@medusajs/framework/workflows-sdk";
 import { ADDON_MODULE, AddonModuleTypes } from "../../modules/addon";
+import AddonModuleService from "../../modules/addon/service";
 
 export type UpdateAddonGroupsStepInput = {
   selector: AddonModuleTypes.FilterableAddonGroupProps;
@@ -13,7 +14,7 @@ export const updateAddonGroupsStepId = "update-addon-groups";
 export const updateAddonGroupsStep = createStep(
   updateAddonGroupsStepId,
   async (data: UpdateAddonGroupsStepInput, { container }) => {
-    const service = container.resolve(ADDON_MODULE);
+    const service = container.resolve<AddonModuleService>(ADDON_MODULE);
 
     const { selects, relations } = getSelectsAndRelationsFromObjectArray([
       data.update,
@@ -36,7 +37,7 @@ export const updateAddonGroupsStep = createStep(
     if (!prevData?.prevData.length) {
       return;
     }
-    const service = container.resolve(ADDON_MODULE);
+    const service = container.resolve<AddonModuleService>(ADDON_MODULE);
     await service.updateAddonGroups({
       selector: prevData.selector,
       data: prevData.prevData.map((r) => ({

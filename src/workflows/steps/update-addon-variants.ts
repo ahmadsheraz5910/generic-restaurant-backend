@@ -9,6 +9,7 @@ import {
 } from "@medusajs/framework/utils";
 import { StepResponse, createStep } from "@medusajs/framework/workflows-sdk";
 import { ADDON_MODULE, AddonModuleTypes } from "../../modules/addon";
+import AddonModuleService from "../../modules/addon/service";
 
 export type UpdateAddonVariantsStepInput =
   | {
@@ -24,7 +25,7 @@ export const updateAddonVariantsStepId = "update-addon-variants";
 export const updateAddonVariantsStep = createStep(
   updateAddonVariantsStepId,
   async (data: UpdateAddonVariantsStepInput, { container }) => {
-    const service = container.resolve(ADDON_MODULE);
+    const service = container.resolve<AddonModuleService>(ADDON_MODULE);
     if ("addon_variants" in data) {
       if (data.addon_variants.some((p) => !p.id)) {
         throw new MedusaError(
@@ -60,7 +61,7 @@ export const updateAddonVariantsStep = createStep(
     if (!prevData?.length) {
       return;
     }
-    const service = container.resolve(ADDON_MODULE);
+    const service = container.resolve<AddonModuleService>(ADDON_MODULE);
     await service.upsertAddonVariants(
       prevData.map((r) => ({
         ...(r as unknown as AddonModuleTypes.UpdateAddonVariantDTO),
