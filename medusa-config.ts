@@ -77,5 +77,11 @@ module.exports = defineConfig({
         ],
       },
     },
+    {
+      resolve: "./src/modules/addon",
+      definition: {
+        isQueryable: true,
+      },
+    },
   ],
 });
