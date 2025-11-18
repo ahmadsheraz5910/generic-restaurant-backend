@@ -2,37 +2,26 @@ import {
   AuthenticatedMedusaRequest,
   MedusaResponse,
 } from "@medusajs/framework/http";
-import {
-  ContainerRegistrationKeys,
-  remoteQueryObjectFromString,
-} from "@medusajs/framework/utils";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import { AdminCreateAddonGroupType } from "./validators";
 import { createAddonGroupsWorkflow } from "../../../workflows/create-addon-groups";
 import { refetchAddonGroup } from "./helpers";
 import { HttpTypes } from "../../../types/addons";
 
 export const GET = async (
-  req: AuthenticatedMedusaRequest<HttpTypes.AdminAddonGroupsListParams>,
-  res: MedusaResponse<HttpTypes.AdminAddonGroupsListResponse>
+  req: AuthenticatedMedusaRequest,
+  res: MedusaResponse
 ) => {
-  const remoteQuery = req.scope.resolve(ContainerRegistrationKeys.REMOTE_QUERY);
+  const remoteQuery = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
-  const query = remoteQueryObjectFromString({
-    entryPoint: "addon_group",
-    variables: {
-      filters: req.filterableFields,
-      ...req.queryConfig.pagination,
-    },
-    fields: req.queryConfig.fields,
+  const { data: addon_groups } = await remoteQuery.graph({
+    entity: "addon_group",
+    filters: req.filterableFields,
+    ...req.queryConfig,
   });
-
-  const { rows: addon_groups, metadata } = await remoteQuery(query);
 
   res.json({
     addon_groups,
-    count: metadata.count,
-    offset: metadata.skip,
-    limit: metadata.take,
   });
 };
 

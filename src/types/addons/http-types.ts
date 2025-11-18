@@ -96,6 +96,7 @@ export interface BaseAddonGroupListParams
   id?: string | string[];
   handle?: string | string[];
   title?: string | string[];
+  product_id?: string | string[];
   created_at?: OperatorMap<string>;
   updated_at?: OperatorMap<string>;
 }

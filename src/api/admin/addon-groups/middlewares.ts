@@ -1,4 +1,7 @@
-import { MiddlewareRoute } from "@medusajs/framework/http";
+import {
+  maybeApplyLinkFilter,
+  MiddlewareRoute,
+} from "@medusajs/framework/http";
 import {
   validateAndTransformBody,
   validateAndTransformQuery,
@@ -11,6 +14,7 @@ import {
   AdminUpdateAddonGroup,
 } from "./validators";
 import { createLinkBody } from "@medusajs/medusa/api/utils/validators";
+import ProductAddonGroupLink from "../../../links/addon-group_product";
 export const adminAddonGroupsRoutesMiddlewares: MiddlewareRoute[] = [
   {
     method: ["GET"],
@@ -20,6 +24,11 @@ export const adminAddonGroupsRoutesMiddlewares: MiddlewareRoute[] = [
         AdminGetAddonGroupsParams,
         QueryConfig.listTransformQueryConfig
       ),
+      maybeApplyLinkFilter({
+        entryPoint: ProductAddonGroupLink.entryPoint,
+        resourceId: "addon_group_id",
+        filterableField: "product_id",
+      }),
     ],
   },
   {
