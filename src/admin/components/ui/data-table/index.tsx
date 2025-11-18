@@ -19,7 +19,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQueryParams } from "../../../hooks/use-query-params";
 import DataTableContextProvider, { useDataTableContext } from "./context";
 import { DataTableFilterBar } from "./data-table-filter-bar";
-import { RowSelectionState } from "@tanstack/react-table";
+import { OnChangeFn, RowSelectionState } from "@tanstack/react-table";
 import { NoRecords, NoResults, NoResultsProps } from "../../empty-states";
 
 function transformSortingState(value: DataTableSortingState) {
@@ -110,6 +110,10 @@ interface DataTableProps<TData> {
   prefix?: string;
   pageSize?: number;
   isLoading?: boolean;
+  rowSelection?: {
+    state: RowSelectionState;
+    updater: OnChangeFn<RowSelectionState>;
+  };
   layout?: "fill" | "auto";
   noRecords?: Pick<NoResultsProps, "title" | "message">;
   initialColumnVisibility?: VisibilityState;
@@ -132,6 +136,7 @@ const Root = <TData,>({
   enablePagination = true,
   enableRowSelection = true,
   onColumnVisibilityChange,
+  rowSelection: _rowSelection,
   children,
 }: PropsWithChildren<DataTableProps<TData>>) => {
   const navigate = useNavigate();
@@ -243,8 +248,6 @@ const Root = <TData,>({
     return order ? parseSortingState(order) : null;
   }, [order]);
 
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
   const handleSortingChange = (value: DataTableSortingState) => {
     setSearchParams((prev) => {
       if (value) {
@@ -281,15 +284,27 @@ const Root = <TData,>({
     },
     [navigate, rowHref]
   );
+
+  const [localRowSelection, setLocalRowSelection] = useState({});
+  const rowSelection = _rowSelection?.state ?? localRowSelection;
+  const setRowSelection = _rowSelection?.updater ?? setLocalRowSelection;
+
   const instance = useDataTable({
     data,
     columns,
     filters,
-    commands,
+    commands: commands?.map((c) => ({
+      ...c,
+      action: () => handleCommandAction(c.action),
+    })),
     rowCount,
-
     getRowId: getRowId ?? ((row: any, idx) => row.id ?? idx),
     onRowClick: rowHref ? onRowClick : undefined,
+    rowSelection: {
+      state: rowSelection,
+      onRowSelectionChange: setRowSelection,
+      enableRowSelection: enableRowSelection,
+    },
     pagination: enablePagination
       ? {
           state: pagination,
@@ -314,19 +329,17 @@ const Root = <TData,>({
           onSearchChange: handleSearchChange,
         }
       : undefined,
-    rowSelection: enableRowSelection
-      ? {
-          state: rowSelection,
-          onRowSelectionChange: setRowSelection,
-        }
-      : undefined,
     isLoading,
     columnVisibility: {
       state: columnVisibility,
       onColumnVisibilityChange: handleColumnVisibilityChange,
     },
   });
-
+  const handleCommandAction = async (action: DataTableCommand["action"]) => {
+    await (action(rowSelection) as any).then(() => {
+      setRowSelection({});
+    });
+  };
   // Update column visibility when initial visibility changes
   React.useEffect(() => {
     // Deep compare to check if the visibility has actually changed
