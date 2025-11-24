@@ -15,7 +15,8 @@ import {
   ImageUploadField,
   MediaSchema,
 } from "../../../../components/ImageUploadField";
-
+import { sdk } from "../../../../lib/sdk";
+import { HttpTypes as MedusaHttpTypes } from "@medusajs/framework/types";
 type EditAddonFormProps = {
   addon: HttpTypes.AdminAddon;
 };
@@ -24,7 +25,7 @@ const EditAddonSchema = zod.object({
   title: zod.string().min(1),
   handle: zod.string().optional(),
   status: zod.enum(["draft", "published", "proposed", "rejected"]),
-  thumbnail: MediaSchema.optional(),
+  thumbnail: MediaSchema.optional().nullable(),
 });
 
 export const EditAddonForm = ({ addon }: EditAddonFormProps) => {
@@ -39,6 +40,8 @@ export const EditAddonForm = ({ addon }: EditAddonFormProps) => {
       thumbnail: addon.thumbnail
         ? {
             url: addon.thumbnail,
+            file: null,
+            id: "1",
           }
         : null,
     },
@@ -49,15 +52,27 @@ export const EditAddonForm = ({ addon }: EditAddonFormProps) => {
 
   const handleSubmit = form.handleSubmit(async (data) => {
     const { title, handle, status, thumbnail, ...optional } = data;
-
     const nullableData = transformNullableFormData(optional);
-
+    let uploadedMedia: MedusaHttpTypes.AdminFile[] = [];
+    if (thumbnail?.file) {
+      const { files: uploads } = await sdk.admin.upload
+        .create({ files: [thumbnail?.file] })
+        .catch(() => {
+          form.setError("thumbnail", {
+            type: "invalid_file",
+            message: t("products.media.failedToUpload"),
+          });
+          return { files: [] };
+        });
+      uploadedMedia = uploads;
+    }
+    
     await mutateAsync(
       {
         title,
         handle,
         status: status,
-        thumbnail: thumbnail?.url,
+        thumbnail: uploadedMedia[0]?.url ?? null,
         ...nullableData,
       },
       {
