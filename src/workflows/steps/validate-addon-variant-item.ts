@@ -46,8 +46,8 @@ export const validateAddonVariantLineItemStep = createStep(
         const variantProductId = variant.product_id;
         for (const av of addonVariants) {
           //@ts-ignore
-          const addonProductId = av.addon.addonGroup.product_id;
-          if (addonProductId !== variantProductId) {
+          const addonProductIds = av.addon.addonGroup.products.map((p) => p.id);
+          if (!addonProductIds.includes(variantProductId)) {
             invalidCombinations.push({
               addon_variant_id: av.id,
               variant_id: variant.id,
