@@ -87,11 +87,12 @@ export const addAddonItemToCartWorkflow = createWorkflow(
     }).config({ name: "get-addon-variants" });
 
     const addonGroupIds = transform(
-      { addonVariants },
-      (data) =>
-        data.addonVariants
+      { addonVariants: addonVariants as any },
+      (data) => {
+        return data.addonVariants
           .map((av) => av.addon?.addon_group_id)
-          .filter((a) => !!a) as string[]
+          .filter((a) => !!a) as unknown as string[];
+      }
     );
     const { data: productAddonGroupLinks } = useQueryGraphStep({
       entity: AddonGroupProductLink.entryPoint,
@@ -116,9 +117,15 @@ export const addAddonItemToCartWorkflow = createWorkflow(
                 ...av,
                 addon: {
                   ...av.addon,
-                  addonGroup: data.productAddonGroupLinks.find(
-                    (pag) => pag.addon_group_id === av.addon?.addon_group_id
-                  ),
+                  addonGroup: {
+                    id: av.addon?.addon_group_id,
+                    products: data.productAddonGroupLinks
+                      .filter(
+                        (link) =>
+                          link.addon_group_id === av.addon?.addon_group_id
+                      )
+                      .map((pag) => ({ id: pag.product_id })),
+                  },
                 },
               })),
           };
