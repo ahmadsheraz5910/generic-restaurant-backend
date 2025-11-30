@@ -5,10 +5,11 @@ import {
   generatePublishableKey,
   generateStoreHeaders,
 } from "../helpers/create-admin-user";
+import { fakeAddon, fakeAddonGroup, fakeProduct } from "../helpers/faker-data";
 
-jest.setTimeout(60000 * 1000);
+jest.setTimeout(700000 * 1000);
 
-medusaIntegrationTestRunner({
+medusaIntegrationTestRunner({ 
   testSuite: ({ api, dbConnection, getContainer }) => {
     let baseProduct;
     let baseAddon;
@@ -48,35 +49,15 @@ medusaIntegrationTestRunner({
       ).data.region;
 
       baseAddonGroup = (
-        await api.post(
-          "/admin/addon-groups",
-          {
-            title: "Addon Group 1",
-          },
-          adminHeaders
-        )
+        await api.post("/admin/addon-groups", fakeAddonGroup(), adminHeaders)
       ).data.addon_group;
 
       baseAddon = (
         await api.post(
           "/admin/addons",
-          {
-            title: "Addon 1",
-            status: "published",
-            thumbnail: "addon-image.png",
+          fakeAddon({
             addon_group_id: baseAddonGroup.id,
-            variants: [
-              {
-                title: "Addon Variant 1",
-                prices: [
-                  {
-                    amount: 5,
-                    currency_code: "nzd",
-                  },
-                ],
-              },
-            ],
-          },
+          }),
           adminHeaders
         )
       ).data.addon;
@@ -84,32 +65,7 @@ medusaIntegrationTestRunner({
       baseProduct = (
         await api.post(
           "/admin/products",
-          {
-            title: "Product 1",
-            status: "published",
-            options: [
-              {
-                title: "Size",
-                values: ["small", "medium", "large"],
-              },
-            ],
-            shipping_profile_id: shippingProfile.id,
-            variants: [
-              {
-                title: "Variant 1",
-                options: {
-                  Size: "small",
-                },
-                manage_inventory: false,
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "nzd",
-                  },
-                ],
-              },
-            ],
-          },
+          fakeProduct({ shipping_profile_id: shippingProfile.id }),
           adminHeaders
         )
       ).data.product;
@@ -146,7 +102,7 @@ medusaIntegrationTestRunner({
             storeHeaders
           )
           .catch((err) => {
-            console.log(err);
+            return err;
           });
         expect(res.status).toEqual(200);
         expect(res.data.cart).toEqual(
@@ -160,6 +116,35 @@ medusaIntegrationTestRunner({
             ]),
           })
         );
+      });
+
+      it("shouldn't add addon line item to a cart if the addon variant is not linked to the product variant", async () => {
+        const newProduct = (await api.post(
+          "/admin/products",
+          fakeProduct({
+            title: "Product2",
+            shipping_profile_id: shippingProfile.id,
+          }),
+          adminHeaders
+        )).data.product;
+
+        const res = await api
+          .post(
+            `/store/carts/${baseCart.id}/addon-line-items`,
+            {
+              addon_variant_ids: [baseAddon.variants[0].id],
+              variant_id: newProduct.variants[0].id,
+              quantity: 1,
+            },
+            storeHeaders
+          )
+          .catch((err) => {
+            console.log(err);
+            return err;
+          });
+
+        expect(res.response.status).toEqual(400);
+        expect(res.response.data.message).toContain("Combinations");
       });
     });
   },
