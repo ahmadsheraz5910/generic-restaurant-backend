@@ -1,6 +1,7 @@
 import {
   AddToCartWorkflowInputDTO,
   CreateCartCreateLineItemDTO,
+  UpdateLineItemWithoutSelectorDTO,
 } from "@medusajs/framework/types";
 import {
   createWorkflow,
@@ -10,14 +11,14 @@ import {
 } from "@medusajs/framework/workflows-sdk";
 import {
   addToCartWorkflow,
+  updateLineItemInCartWorkflow,
+  updateLineItemsStep,
   useQueryGraphStep,
 } from "@medusajs/medusa/core-flows";
 import { getAddonVariantPricingStep } from "./steps/get-addon-variant-prices";
 import AddonGroupProductLink from "../links/addon-group_product";
 import { validateAddonVariantLineItemStep } from "./steps/validate-addon-variant-item";
-import { isPresent } from "@medusajs/framework/utils";
-import { randomUUID } from "crypto";
-
+import { groupBy } from "lodash";
 /**
  * Workflow to add addon items to a cart.
  * It takes in an array of items, each item being a line item with a product-variant and an array of addon variant ids.
@@ -56,6 +57,9 @@ export const addAddonItemToCartWorkflow = createWorkflow(
         "customer.id",
         "email",
         "customer.groups.id",
+        "items.id",
+        "items.metadata",
+        "items.quantity",
       ],
       options: { throwIfKeyNotFound: true, isList: false },
     }).config({ name: "get-cart" });
@@ -151,69 +155,99 @@ export const addAddonItemToCartWorkflow = createWorkflow(
       context: cartPricingContext,
     });
 
-    const prepareCartInput = transform(
-      { addonVariantsWithCalculatedPrice, items },
+    const prepareCartItems = transform(
+      { cart, addonVariantsWithCalculatedPrice, items },
       (data) => {
-        return data.items
-          .map((item) => {
-            const {
-              addon_variant_ids,
-              variant,
-              addonVariants,
-              variant_id,
-              ...rest
-            } = item;
-            const addonVariantsPrices =
-              data.addonVariantsWithCalculatedPrice.filter((av) =>
-                addon_variant_ids.includes(av.id)
-              );
-            const uniqueVariantAddonId = `${variant?.id}-${randomUUID()}`;
-            // Creating line items for each addon variant with the calculated price
-            const items = addonVariantsPrices.map((av) => {
-              const addonVariantData = addonVariants.find(
-                (av) => av.id === av.id
-              );
-              return {
-                ...rest,
-                unit_price: av.calculated_price.calculated_amount,
-                title: addonVariantData?.addon?.title,
-                thumbnail: addonVariantData?.addon?.thumbnail,
-                product_id: variant?.product_id,
-                metadata: {
-                  uniqueVariantAddonId,
-                  linked_variant_id: variant?.id,
-                  addon_variant_id: av.id,
-                  addon_variant_title: av.title,
-                  addon_id: addonVariantData?.addon?.id,
-                  addon_title: addonVariantData?.addon?.title,
-                  addon_group_id: addonVariantData?.addon?.addon_group_id,
-                },
-              } as CreateCartCreateLineItemDTO;
-            });
+        const newItems = [] as CreateCartCreateLineItemDTO[];
+        const existingItems = [] as UpdateLineItemWithoutSelectorDTO[];
+        for (const item of data.items) {
+          const {
+            addon_variant_ids,
+            variant,
+            addonVariants,
+            variant_id,
+            ...rest
+          } = item;
+          const addonVariantsGroupByAddonGroups = groupBy(
+            addonVariants,
+            "addon.addon_group_id"
+          );
 
-            // Adding the base line item for the variant
-            items.push({
+          // Currently addon_group_id is not necessary, since one addon can only be added to one addon group
+          const uniqueVariantAddonId = `${variant?.id}_${Object.entries(
+            addonVariantsGroupByAddonGroups
+          )
+            .map(([key, avs]) => `${key}-${avs.map((av) => av.id).join(",")}`)
+            .join(",")}`;
+
+          const existingLItems = data.cart.items.filter(
+            (i) => i?.metadata?.uniqueVariantAddonId === uniqueVariantAddonId
+          );
+
+          if (existingLItems.length) {
+            existingItems.push(
+              ...existingLItems.map((i) => ({
+                id: i?.id ?? "",
+                quantity: (i?.quantity ?? 0) + 1,
+              }))
+            );
+            continue;
+          }
+          // Creating line items for each addon variant with the calculated price
+          const addonItems = addonVariants.map((av) => {
+            const avCalculatedPrice =
+              data.addonVariantsWithCalculatedPrice.find(
+                (avcp) => avcp.id === av.id
+              );
+
+            return {
               ...rest,
-              variant_id: variant?.id,
+              unit_price: avCalculatedPrice?.calculated_price.calculated_amount,
+              title: av?.addon?.title,
+              thumbnail: av?.addon?.thumbnail,
+              product_id: variant?.product_id,
               metadata: {
-                ...rest.metadata,
                 uniqueVariantAddonId,
+                linked_variant_id: variant?.id,
+                addon_variant_id: av.id,
+                addon_variant_title: av.title,
+                addon_id: av?.addon?.id,
+                addon_title: av?.addon?.title,
+                addon_group_id: av?.addon?.addon_group_id,
               },
-            } as CreateCartCreateLineItemDTO);
+            } as CreateCartCreateLineItemDTO;
+          });
+          newItems.push(...addonItems);
 
-            return items;
-          })
-          .flat();
+          // Adding the base line item for the variant
+          newItems.push({
+            ...rest,
+            variant_id: variant?.id,
+            metadata: {
+              ...rest.metadata,
+              uniqueVariantAddonId,
+            },
+          });
+        }
+        return {
+          newItems,
+          existingItems,
+        };
       }
     );
 
-    const response = addToCartWorkflow.runAsStep({
+    addToCartWorkflow.runAsStep({
       input: {
         cart_id: input.cart_id,
-        items: prepareCartInput,
+        items: prepareCartItems.newItems,
       },
     });
 
-    return new WorkflowResponse(response);
+    updateLineItemsStep({
+      id: input.cart_id,
+      items: prepareCartItems.existingItems,
+    });
+
+    return new WorkflowResponse(void 0);
   }
 );
