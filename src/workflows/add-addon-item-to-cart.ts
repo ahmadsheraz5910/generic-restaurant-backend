@@ -16,6 +16,7 @@ import { getAddonVariantPricingStep } from "./steps/get-addon-variant-prices";
 import AddonGroupProductLink from "../links/addon-group_product";
 import { validateAddonVariantLineItemStep } from "./steps/validate-addon-variant-item";
 import { isPresent } from "@medusajs/framework/utils";
+import { randomUUID } from "crypto";
 
 /**
  * Workflow to add addon items to a cart.
@@ -166,7 +167,7 @@ export const addAddonItemToCartWorkflow = createWorkflow(
               data.addonVariantsWithCalculatedPrice.filter((av) =>
                 addon_variant_ids.includes(av.id)
               );
-
+            const uniqueVariantAddonId = `${variant?.id}-${randomUUID()}`;
             // Creating line items for each addon variant with the calculated price
             const items = addonVariantsPrices.map((av) => {
               const addonVariantData = addonVariants.find(
@@ -179,6 +180,7 @@ export const addAddonItemToCartWorkflow = createWorkflow(
                 thumbnail: addonVariantData?.addon?.thumbnail,
                 product_id: variant?.product_id,
                 metadata: {
+                  uniqueVariantAddonId,
                   linked_variant_id: variant?.id,
                   addon_variant_id: av.id,
                   addon_variant_title: av.title,
@@ -193,6 +195,10 @@ export const addAddonItemToCartWorkflow = createWorkflow(
             items.push({
               ...rest,
               variant_id: variant?.id,
+              metadata: {
+                ...rest.metadata,
+                uniqueVariantAddonId,
+              },
             } as CreateCartCreateLineItemDTO);
 
             return items;
