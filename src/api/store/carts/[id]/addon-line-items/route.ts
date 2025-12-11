@@ -1,23 +1,20 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import { HttpTypes } from "@medusajs/framework/types";
-import { refetchCart } from "@medusajs/medusa/api/store/carts/helpers";
-import {
-  Modules,
-} from "@medusajs/utils";
+import { Modules } from "@medusajs/utils";
 import { StoreAddCartAddonLineItemType } from "./validators";
-import { addAddonItemToCartWorkflowId } from "../../../../../workflows/add-addon-item-to-cart";
+import { addVariantAddonGroupToCartWorkflowId } from "../../../../../workflows/addon-cart/add-variant-addon-group-to-cart";
+import { refetchCart } from "@medusajs/medusa/api/store/carts/helpers";
 
 export const POST = async (
   req: MedusaRequest<StoreAddCartAddonLineItemType, HttpTypes.SelectParams>,
   res: MedusaResponse<HttpTypes.StoreCartResponse>
 ) => {
   const we = req.scope.resolve(Modules.WORKFLOW_ENGINE);
-  await we.run(addAddonItemToCartWorkflowId, {
+  await we.run(addVariantAddonGroupToCartWorkflowId, {
     input: {
       cart_id: req.params.id,
-      items: [req.validatedBody],
-    },
-    transactionId: "cart-add-addon-item-" + req.params.id,
+      items: [req.body],
+    }
   });
 
   const cart = await refetchCart(
