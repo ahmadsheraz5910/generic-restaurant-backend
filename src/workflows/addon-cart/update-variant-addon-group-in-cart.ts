@@ -168,9 +168,16 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
             addon_variants: inputAddons ?? existingAddonIds,
           });
 
-          const itemsToDelete = inputAddonIds
-            ? arrayDifference(existingAddonIds, inputAddonIds)
-            : [];
+          const itemsToDelete = (
+            inputAddonIds
+              ? arrayDifference(existingAddonIds, inputAddonIds)
+              : []
+          ).map((addonId) => {
+            const existingAddonItem = itemExistingAddonItems.find(
+              (eai) => eai.metadata?.addon_variant_id === addonId
+            );
+            return existingAddonItem?.id as string;
+          });
 
           const itemsToCreate = (
             inputAddonIds
@@ -226,7 +233,6 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
             }
           );
 
-          console.log(itemsToCreate);
 
           return {
             itemsToUpdate,
