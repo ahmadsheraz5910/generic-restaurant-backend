@@ -131,7 +131,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
           const item = data.cartItem;
           const variantQuantity =
             data.inputItem.quantity ?? item?.quantity ?? 1;
-          const variantItemToUpdate = {
+          let variantItemToUpdate: any = {
             id: data.inputItem.id,
             quantity: variantQuantity,
           };
@@ -233,6 +233,12 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
             }
           );
 
+          variantItemToUpdate = {
+            ...variantItemToUpdate,
+            metadata: {
+              variant_addon_sig: signature,
+            },
+          };
 
           return {
             itemsToUpdate,

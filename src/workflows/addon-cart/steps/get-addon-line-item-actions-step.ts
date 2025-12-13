@@ -1,4 +1,5 @@
 import {
+  CreateCartCreateLineItemDTO,
   CreateLineItemForCartDTO,
   ICartModuleService,
   UpdateLineItemWithoutSelectorDTO,
@@ -38,7 +39,7 @@ export const getAddonLineItemActionsStep = createStep(
 
     const addonItemsToCreate: CreateLineItemForCartDTO[] = [];
     const addonItemsToUpdate: UpdateLineItemWithoutSelectorDTO[] = [];
-
+    const variantsToCreate: CreateCartCreateLineItemDTO[] = [];
     const lineItemMap = new Map(
       lineItems
         .filter((li) => typeof li.metadata?.variant_addon_sig === "string")
@@ -55,7 +56,13 @@ export const getAddonLineItemActionsStep = createStep(
     for (const inputItemGroup of input.items) {
       const inputItemSignature = buildItemSignature(inputItemGroup);
       const variantQuantity = inputItemGroup.quantity;
-
+      variantsToCreate.push({
+        variant_id: inputItemGroup.variant_id,
+        quantity: variantQuantity,
+        metadata:{
+          variant_addon_sig: inputItemSignature,
+        }
+      });
       inputItemGroup.addon_variants.map((av) => {
         const existingItem = lineItemMap.get(`${inputItemSignature}-${av.id}`);
 
@@ -116,6 +123,7 @@ export const getAddonLineItemActionsStep = createStep(
     return new StepResponse({
       addonItemsToCreate,
       addonItemsToUpdate,
+      variantsToCreate
     });
   }
 );
