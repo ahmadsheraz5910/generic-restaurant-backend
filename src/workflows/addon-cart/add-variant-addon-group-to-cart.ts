@@ -81,23 +81,24 @@ export const addVariantAddonGroupToCartWorkflow = createWorkflow(
       items: input.items,
     });
 
+    // Handling addon line items
+    const {
+      variantsToCreate = [],
+      addonItemsToCreate = [],
+      addonItemsToUpdate = [],
+    } = getAddonLineItemActionsStep({
+      cart_id: input.cart_id,
+      items: input.items,
+      addonVariantsMap,
+    });
+
     // Handling variant line items
     addToCartWorkflow.runAsStep({
       input: {
         cart_id: input.cart_id,
-        items: transform(input.items, (data) =>
-          data.map((i) => ({ variant_id: i.variant_id, quantity: i.quantity }))
-        ),
+        items: variantsToCreate,
       },
     });
-
-    // Handling addon line items
-    const { addonItemsToCreate = [], addonItemsToUpdate = [] } =
-      getAddonLineItemActionsStep({
-        cart_id: input.cart_id,
-        items: input.items,
-        addonVariantsMap,
-      });
 
     const { data: cart } = useQueryGraphStep({
       entity: "cart",
