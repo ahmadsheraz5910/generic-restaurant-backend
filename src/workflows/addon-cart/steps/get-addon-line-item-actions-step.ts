@@ -2,15 +2,23 @@ import {
   CreateCartCreateLineItemDTO,
   CreateLineItemForCartDTO,
   ICartModuleService,
+  UpdateLineItemDTO,
+  UpdateLineItemInCartWorkflowInputDTO,
   UpdateLineItemWithoutSelectorDTO,
 } from "@medusajs/framework/types";
-import { MathBN, MedusaError, Modules } from "@medusajs/framework/utils";
+import {
+  BigNumber,
+  MathBN,
+  MedusaError,
+  Modules,
+} from "@medusajs/framework/utils";
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
 import { buildItemSignature } from "../utils/variant-addon-signature";
 import {
   createAddonVariantLinkedEntityMap,
   prepareAddonVariantItem,
 } from "../utils/helpers";
+import { updateLineItemInCartWorkflow } from "@medusajs/medusa/core-flows";
 
 export const getAddonLineItemActionsStepId = "get-addon-line-item-actions-step";
 
@@ -40,29 +48,47 @@ export const getAddonLineItemActionsStep = createStep(
     const addonItemsToCreate: CreateLineItemForCartDTO[] = [];
     const addonItemsToUpdate: UpdateLineItemWithoutSelectorDTO[] = [];
     const variantsToCreate: CreateCartCreateLineItemDTO[] = [];
+    const variantsToUpdate: UpdateLineItemDTO[] = [];
     const lineItemMap = new Map(
-      lineItems
-        .filter((li) => typeof li.metadata?.variant_addon_sig === "string")
-        .map((li) => {
-          return [
-            `${li.metadata?.variant_addon_sig as string}-${
-              li.metadata?.addon_variant_id
-            }`,
-            li,
-          ];
-        })
+      lineItems.map((li) => {
+        return [
+          `${li.metadata?.variant_addon_sig as string}-${
+            li.variant_id ?? li.metadata?.addon_variant_id
+          }`,
+          li,
+        ];
+      })
     );
 
     for (const inputItemGroup of input.items) {
       const inputItemSignature = buildItemSignature(inputItemGroup);
-      const variantQuantity = inputItemGroup.quantity;
-      variantsToCreate.push({
-        variant_id: inputItemGroup.variant_id,
-        quantity: variantQuantity,
-        metadata:{
-          variant_addon_sig: inputItemSignature,
-        }
-      });
+      let variantQuantity = inputItemGroup.quantity as any;
+      const existingVariantItem = lineItemMap.get(
+        `${inputItemSignature}-${inputItemGroup.variant_id}`
+      );
+      if (existingVariantItem) {
+        variantQuantity = MathBN.sum(
+          existingVariantItem.quantity,
+          variantQuantity
+        );
+        variantsToUpdate.push({
+          id: existingVariantItem.id,
+          cart_id: input.cart_id,
+          quantity: variantQuantity,
+          metadata: {
+            variant_addon_sig: inputItemSignature,
+          },
+        });
+      } else {
+        variantsToCreate.push({
+          variant_id: inputItemGroup.variant_id,
+          quantity: variantQuantity,
+          metadata: {
+            variant_addon_sig: inputItemSignature,
+          },
+        });
+      }
+
       inputItemGroup.addon_variants.map((av) => {
         const existingItem = lineItemMap.get(`${inputItemSignature}-${av.id}`);
 
@@ -72,14 +98,7 @@ export const getAddonLineItemActionsStep = createStep(
               | number
               | undefined) ?? 1;
           const newAddonQuantity = av.quantity ?? existingAddonQuantity;
-          const existingQuantityWithoutScale = MathBN.div(
-            existingItem.quantity,
-            existingAddonQuantity
-          );
-          const newQuantityWithoutScale = MathBN.sum(
-            existingQuantityWithoutScale,
-            variantQuantity
-          );
+          const newQuantityWithoutScale = variantQuantity
           const scaledQuantity = MathBN.mult(
             newQuantityWithoutScale,
             newAddonQuantity
@@ -123,7 +142,8 @@ export const getAddonLineItemActionsStep = createStep(
     return new StepResponse({
       addonItemsToCreate,
       addonItemsToUpdate,
-      variantsToCreate
+      variantsToCreate,
+      variantsToUpdate,
     });
   }
 );

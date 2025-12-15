@@ -72,7 +72,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
 
     validateCartStep({ cart: cart as any });
 
-    const cartItem = transform(
+    const variantLineItem = transform(
       { inputItem: input.item, cart: cart as unknown as StoreCart },
       (data) => {
         const cartItem = data.cart?.items?.find(
@@ -96,7 +96,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
       const { data: variantsData } = useQueryGraphStep({
         entity: "variant",
         filters: {
-          id: cartItem.variant_id,
+          id: variantLineItem.variant_id,
         },
         fields: requiredFieldForAddonVariantLinkedEntityMap,
         options: {
@@ -111,7 +111,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
         addonVariantsMap,
         items: [
           {
-            variant_id: cartItem.variant_id!,
+            variant_id: variantLineItem.variant_id!,
             addon_variants: input.item.addon_variants!,
           },
         ],
@@ -122,15 +122,14 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
     const { variantItemToUpdate, itemsToCreate, itemsToUpdate, itemsToDelete } =
       transform(
         {
-          cartItem,
+          variantLineItem,
           cart: cart as unknown as StoreCart,
           inputItem: input.item,
           addonVariantsMap,
         },
         (data) => {
-          const item = data.cartItem;
           const variantQuantity =
-            data.inputItem.quantity ?? item?.quantity ?? 1;
+            data.inputItem.quantity ?? data.variantLineItem?.quantity ?? 1;
           let variantItemToUpdate: any = {
             id: data.inputItem.id,
             quantity: variantQuantity,
@@ -139,9 +138,8 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
             data.cart.items?.filter(
               (item) =>
                 typeof item.metadata?.variant_addon_sig === "string" &&
-                !item.metadata?.variant_addon_sig.includes(
-                  item?.variant_id as string
-                )
+                item.metadata.variant_addon_sig ===
+                  data.variantLineItem.metadata?.variant_addon_sig
             ) ?? [];
 
           const inputAddons = data.inputItem.addon_variants;
@@ -164,7 +162,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
           }
 
           const signature = buildItemSignature({
-            variant_id: item?.variant_id as string,
+            variant_id: variantLineItem?.variant_id as string,
             addon_variants: inputAddons ?? existingAddonIds,
           });
 
@@ -249,14 +247,6 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
         }
       );
 
-    const cartPricingContext = {
-      currency_code: cart.currency_code ?? cart.region?.currency_code,
-      region_id: cart.region_id,
-      region: cart.region,
-      customer_id: cart.customer_id,
-      customer: cart.customer,
-    } as unknown as Record<string, string | number>;
-
     const itemsToCreateWithPrice = when(
       "should-calculate-addon-prices",
       { itemsToCreate },
@@ -267,7 +257,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
       );
       const addonVariants = getAddonVariantPricingStep({
         addon_variant_ids: addonVariantIds,
-        context: cartPricingContext,
+        cart: cart as any,
       });
       return transform({ addonVariants, itemsToCreate }, (data) =>
         data.itemsToCreate.map((i) => {
