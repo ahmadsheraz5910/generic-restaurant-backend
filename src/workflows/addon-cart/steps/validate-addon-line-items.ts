@@ -28,6 +28,14 @@ export const requiredVariantFieldsForAddonValidation = [
   "product.addon_groups.addons.id",
   "product.addon_groups.addons.variants.id",
 ];
+export const requiredVariantAddonFields = [
+  "product.addon_groups.title",
+  "product.addon_groups.handle",
+  "product.addon_groups.addons.title",
+  "product.addon_groups.addons.handle",
+  "product.addon_groups.addons.thumbnail",
+  "product.addon_groups.addons.variants.title",
+];
 export const validateAddonLineItemsStep = createStep(
   validateAddonLineItemsStepId,
   async (input: ValidateAddonLineItemsStepInput) => {
