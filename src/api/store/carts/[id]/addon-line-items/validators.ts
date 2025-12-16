@@ -15,7 +15,7 @@ export const StoreAddCartAddonLineItem = z.object({
 });
 
 export const StoreUpdateCartAddonLineItem = z.object({
-  quantity: z.number().gt(0).optional(),
+  quantity: z.number().gte(0).optional(),
   addon_variants: z.array(
     z.object({
       id: z.string(),

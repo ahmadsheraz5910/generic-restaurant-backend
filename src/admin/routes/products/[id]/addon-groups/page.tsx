@@ -14,7 +14,6 @@ const LinkAddonGroupPage = () => {
   if (isError) {
     throw error;
   }
-  console.log(addonGroupIds, "New")
   return (
     <RouteFocusModal>
       {product && !isLoading ? (

@@ -142,7 +142,6 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
           const itemsToDelete: string[] = [];
           const itemsToCreate: CreateLineItemForCartDTO[] = [];
           const itemsToUpdate: UpdateLineItemDTO[] = [];
-
           const inputAddonVariants = data.inputItem.addon_variants;
           const inputAddonVariantIds = inputAddonVariants?.map((av) => av.id);
           const previousAddonItems = getLineItemAddons(
@@ -154,7 +153,6 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
             previousAddonItems.map(
               (eai) => eai.metadata?.addon_variant_id as string
             );
-
           const newSignature = buildItemSignature({
             variant_id: data.variantLineItem?.variant_id as string,
             addon_variants: newAddonVariantIds,
@@ -171,12 +169,17 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
             },
           };
 
-          //Delete this line item and merge quantity with existing variant item
+          // If the new signature matches another variant item other than the input item, 
+          // delete the input item and merge the quantity with the existing variant item
           const existingVariantItem = findVariantItemWithSignature(
             data.cart,
             newSignature
           );
-          if (existingVariantItem) {
+          if (
+            existingVariantItem &&
+            existingVariantItem.id !== data.inputItem.id
+          ) {
+            //Delete this line item and merge quantity with existing variant item
             variantQuantity = MathBN.sum(
               existingVariantItem.quantity,
               variantQuantity
@@ -188,7 +191,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
             };
             itemsToDelete.push(data.inputItem.id);
           }
-
+          
           // Associated addon items
           if (variantQuantity === 0 || newAddonVariantIds.length === 0) {
             // Delete all existing addon items
@@ -201,7 +204,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
           }
 
           for (const newAddonVariantId of newAddonVariantIds) {
-            const inputData = inputAddonVariants?.find(
+            const inputAddonData = inputAddonVariants?.find(
               (addon) => addon.id === newAddonVariantId
             );
             const existingAddonItem = findAddonItemWithSignature(
@@ -209,34 +212,11 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
               newAddonVariantId,
               newSignature
             );
-            const addonVariantData = data.addonVariantsMap?.[newAddonVariantId];
-            if (!addonVariantData) {
-              // This should never happen, but just in case
-              throw new MedusaError(
-                MedusaError.Types.INVALID_DATA,
-                `Addon variant ${newAddonVariantId} not found`
-              );
-            }
 
-            // Create new addon item
-            if (!existingAddonItem) {
-              const addonQuantity = inputData?.quantity ?? 1;
-              itemsToCreate.push(
-                prepareAddonVariantItem({
-                  item: {
-                    quantity: MathBN.mult(variantQuantity, addonQuantity),
-                    cart_id: data.cart.id,
-                    unit_price: 0,
-                  },
-                  addonVariantData,
-                  signature: newSignature,
-                  addonQuantity: addonQuantity,
-                })
-              );
-            } else {
+            if (existingAddonItem) {
               // Update existing addon item
               const addonQuantity =
-                inputData?.quantity ??
+                inputAddonData?.quantity ??
                 (existingAddonItem?.metadata
                   ?.addon_variant_quantity as number) ??
                 1;
@@ -251,23 +231,43 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
                   addon_variant_quantity: addonQuantity,
                 },
               });
+            } else {
+              // New addon item
+              const addonQuantity = inputAddonData?.quantity ?? 1;
+              const addonVariantData =
+                data.addonVariantsMap?.[newAddonVariantId];
+              if (!addonVariantData) {
+                // This should never happen due to prior validation
+                throw new MedusaError(
+                  MedusaError.Types.INVALID_DATA,
+                  `Addon variant ${newAddonVariantId} not found`
+                );
+              }
+              itemsToCreate.push(
+                prepareAddonVariantItem({
+                  item: {
+                    quantity: MathBN.mult(variantQuantity, addonQuantity),
+                    cart_id: data.cart.id,
+                    unit_price: 0,
+                  },
+                  addonVariantData,
+                  signature: newSignature,
+                  addonQuantity: addonQuantity,
+                })
+              );
             }
           }
 
-          const previousAddonIds = previousAddonItems.map(
-            (eai) => eai.metadata?.addon_variant_id as string
-          );
-          // Delete removed addon items
-          (newAddonVariantIds
-            ? arrayDifference(previousAddonIds, newAddonVariantIds)
-            : []
-          ).forEach((addonId) => {
-            const itemId = previousAddonItems.find(
-              (eai) => eai.metadata?.addon_variant_id === addonId
-            )?.id as string;
-            itemsToDelete.push(itemId);
-          });
+          for (const previousAddon of previousAddonItems) {
+            const isUpdating = itemsToUpdate.find(
+              (item) => item.id === previousAddon.id
+            );
+            if (!isUpdating) {
+              itemsToDelete.push(previousAddon.id);
+            }
+          }
           
+
           return {
             itemsToUpdate,
             itemsToDelete,
