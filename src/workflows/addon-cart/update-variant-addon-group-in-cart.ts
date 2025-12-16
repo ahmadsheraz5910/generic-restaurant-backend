@@ -18,12 +18,23 @@ import {
 import { cartFieldsForPricingContext } from "./utils/fields";
 import {
   arrayDifference,
+  BigNumber,
   isDefined,
   MathBN,
   MedusaError,
 } from "@medusajs/framework/utils";
-import { StoreCart } from "@medusajs/framework/types";
-import { buildItemSignature } from "./utils/variant-addon-signature";
+import {
+  CreateLineItemDTO,
+  CreateLineItemForCartDTO,
+  StoreCart,
+  UpdateLineItemDTO,
+} from "@medusajs/framework/types";
+import {
+  buildItemSignature,
+  findAddonItemWithSignature,
+  findVariantItemWithSignature,
+  getLineItemAddons,
+} from "./utils/variant-addon-signature";
 import { getAddonVariantPricingStep } from "../steps/get-addon-variant-prices";
 import { validateAddonLineItemsStep } from "./steps/validate-addon-line-items";
 import {
@@ -128,116 +139,135 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
           addonVariantsMap,
         },
         (data) => {
-          const variantQuantity =
+          const itemsToDelete: string[] = [];
+          const itemsToCreate: CreateLineItemForCartDTO[] = [];
+          const itemsToUpdate: UpdateLineItemDTO[] = [];
+
+          const inputAddonVariants = data.inputItem.addon_variants;
+          const inputAddonVariantIds = inputAddonVariants?.map((av) => av.id);
+          const previousAddonItems = getLineItemAddons(
+            data.variantLineItem,
+            data.cart
+          );
+          const newAddonVariantIds =
+            inputAddonVariantIds ??
+            previousAddonItems.map(
+              (eai) => eai.metadata?.addon_variant_id as string
+            );
+
+          const newSignature = buildItemSignature({
+            variant_id: data.variantLineItem?.variant_id as string,
+            addon_variants: newAddonVariantIds,
+          });
+
+          let variantQuantity =
             data.inputItem.quantity ?? data.variantLineItem?.quantity ?? 1;
+
           let variantItemToUpdate: any = {
             id: data.inputItem.id,
             quantity: variantQuantity,
+            metadata: {
+              variant_addon_sig: newSignature,
+            },
           };
-          const itemExistingAddonItems =
-            data.cart.items?.filter(
-              (item) =>
-                typeof item.metadata?.variant_addon_sig === "string" &&
-                item.metadata.variant_addon_sig ===
-                  data.variantLineItem.metadata?.variant_addon_sig
-            ) ?? [];
 
-          const inputAddons = data.inputItem.addon_variants;
-          const inputAddonIds = inputAddons?.map((av) => av.id);
-          const existingAddonIds = itemExistingAddonItems.map(
-            (eai) => eai.metadata?.addon_variant_id as string
+          //Delete this line item and merge quantity with existing variant item
+          const existingVariantItem = findVariantItemWithSignature(
+            data.cart,
+            newSignature
           );
+          if (existingVariantItem) {
+            variantQuantity = MathBN.sum(
+              existingVariantItem.quantity,
+              variantQuantity
+            ) as any;
+            variantItemToUpdate = {
+              ...variantItemToUpdate,
+              id: existingVariantItem.id,
+              quantity: variantQuantity,
+            };
+            itemsToDelete.push(data.inputItem.id);
+          }
 
-          if (
-            variantQuantity === 0 ||
-            (inputAddons && inputAddons.length === 0)
-          ) {
+          // Associated addon items
+          if (variantQuantity === 0 || newAddonVariantIds.length === 0) {
             // Delete all existing addon items
             return {
               itemsToUpdate: [],
-              itemsToDelete: itemExistingAddonItems?.map((eai) => eai.id),
+              itemsToDelete: previousAddonItems.map((eai) => eai.id),
               itemsToCreate: [],
               variantItemToUpdate,
             };
           }
 
-          const signature = buildItemSignature({
-            variant_id: variantLineItem?.variant_id as string,
-            addon_variants: inputAddons ?? existingAddonIds,
-          });
-
-          const itemsToDelete = (
-            inputAddonIds
-              ? arrayDifference(existingAddonIds, inputAddonIds)
-              : []
-          ).map((addonId) => {
-            const existingAddonItem = itemExistingAddonItems.find(
-              (eai) => eai.metadata?.addon_variant_id === addonId
+          for (const newAddonVariantId of newAddonVariantIds) {
+            const inputData = inputAddonVariants?.find(
+              (addon) => addon.id === newAddonVariantId
             );
-            return existingAddonItem?.id as string;
-          });
-
-          const itemsToCreate = (
-            inputAddonIds
-              ? arrayDifference(inputAddonIds, existingAddonIds)
-              : []
-          ).map((addonId) => {
-            const addonInputData = inputAddons?.find(
-              (addon) => addon.id === addonId
+            const existingAddonItem = findAddonItemWithSignature(
+              data.cart,
+              newAddonVariantId,
+              newSignature
             );
-            const addonQuantity = addonInputData?.quantity ?? 1;
-            const addonVariantData = data.addonVariantsMap?.[addonId];
+            const addonVariantData = data.addonVariantsMap?.[newAddonVariantId];
             if (!addonVariantData) {
               // This should never happen, but just in case
               throw new MedusaError(
                 MedusaError.Types.INVALID_DATA,
-                `Addon variant ${addonId} not found`
+                `Addon variant ${newAddonVariantId} not found`
               );
             }
-            return prepareAddonVariantItem({
-              item: {
-                quantity: MathBN.mult(variantQuantity, addonQuantity),
-                cart_id: data.cart.id,
-                unit_price: 0,
-              },
-              addonVariantData,
-              signature: signature,
-              addonQuantity: addonQuantity,
-            });
-          });
 
-          const itemsToUpdate = itemExistingAddonItems.map(
-            (existingAddonItem) => {
-              const updatedData = inputAddons?.find(
-                (addon) =>
-                  addon.id === existingAddonItem.metadata?.addon_variant_id
+            // Create new addon item
+            if (!existingAddonItem) {
+              const addonQuantity = inputData?.quantity ?? 1;
+              itemsToCreate.push(
+                prepareAddonVariantItem({
+                  item: {
+                    quantity: MathBN.mult(variantQuantity, addonQuantity),
+                    cart_id: data.cart.id,
+                    unit_price: 0,
+                  },
+                  addonVariantData,
+                  signature: newSignature,
+                  addonQuantity: addonQuantity,
+                })
               );
+            } else {
+              // Update existing addon item
               const addonQuantity =
-                updatedData?.quantity ??
+                inputData?.quantity ??
                 (existingAddonItem?.metadata
                   ?.addon_variant_quantity as number) ??
                 1;
-              return {
+              itemsToUpdate.push({
                 id: existingAddonItem.id,
                 quantity: MathBN.mult(variantQuantity, addonQuantity),
                 metadata: {
                   ...existingAddonItem.metadata,
                   addon_variant_id:
                     existingAddonItem.metadata?.addon_variant_id,
-                  variant_addon_sig: signature,
+                  variant_addon_sig: newSignature,
                   addon_variant_quantity: addonQuantity,
                 },
-              };
+              });
             }
+          }
+
+          const previousAddonIds = previousAddonItems.map(
+            (eai) => eai.metadata?.addon_variant_id as string
           );
-
-          variantItemToUpdate = {
-            ...variantItemToUpdate,
-            metadata: {
-              variant_addon_sig: signature,
-            },
-          };
-
+          // Delete removed addon items
+          (newAddonVariantIds
+            ? arrayDifference(previousAddonIds, newAddonVariantIds)
+            : []
+          ).forEach((addonId) => {
+            const itemId = previousAddonItems.find(
+              (eai) => eai.metadata?.addon_variant_id === addonId
+            )?.id as string;
+            itemsToDelete.push(itemId);
+          });
+          
           return {
             itemsToUpdate,
             itemsToDelete,
