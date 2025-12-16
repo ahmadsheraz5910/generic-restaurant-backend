@@ -169,7 +169,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
             },
           };
 
-          // If the new signature matches another variant item other than the input item, 
+          // If the new signature matches another variant item other than the input item,
           // delete the input item and merge the quantity with the existing variant item
           const existingVariantItem = findVariantItemWithSignature(
             data.cart,
@@ -191,13 +191,14 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
             };
             itemsToDelete.push(data.inputItem.id);
           }
-          
+
           // Associated addon items
           if (variantQuantity === 0 || newAddonVariantIds.length === 0) {
             // Delete all existing addon items
+            previousAddonItems.forEach((eai) => itemsToDelete.push(eai.id));
             return {
               itemsToUpdate: [],
-              itemsToDelete: previousAddonItems.map((eai) => eai.id),
+              itemsToDelete,
               itemsToCreate: [],
               variantItemToUpdate,
             };
@@ -266,7 +267,6 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
               itemsToDelete.push(previousAddon.id);
             }
           }
-          
 
           return {
             itemsToUpdate,
