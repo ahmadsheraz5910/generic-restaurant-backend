@@ -7,14 +7,22 @@ import {
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
 import {
   CalculatedPriceSet,
+  CartDTO,
+  CustomerDTO,
   IPricingModuleService,
   Query,
+  RegionDTO,
 } from "@medusajs/framework/types";
 import { BaseAddonVariant } from "../../types/addons/types";
 
 export type GetAddonVariantPricingStepInput = {
   addon_variant_ids: string[];
-  context: Record<string, string | number>;
+  cart: Partial<CartDTO> & {
+    region?: Partial<RegionDTO>;
+    region_id?: string;
+    customer?: Partial<CustomerDTO>;
+    customer_id?: string;
+  };
 };
 
 export type GetVariantPriceSetsStepOutput = ({
@@ -33,6 +41,15 @@ export const getAddonVariantPricingStep = createStep(
       return new StepResponse([]);
     }
 
+    const cartPricingContext = {
+      currency_code:
+        input.cart.currency_code ?? input.cart.region?.currency_code,
+      region_id: input.cart.region_id,
+      region: input.cart.region,
+      customer_id: input.cart.customer_id,
+      customer: input.cart.customer,
+    } as unknown as Record<string, string | number>;
+    
     const pricingModuleService = container.resolve<IPricingModuleService>(
       Modules.PRICING
     );
@@ -66,7 +83,7 @@ export const getAddonVariantPricingStep = createStep(
 
     const calculatedPriceSets = await pricingModuleService.calculatePrices(
       { id: priceSetIds },
-      { context: input.context }
+      { context: cartPricingContext }
     );
 
     const notFoundCalculatedPriceSets: string[] = [];
