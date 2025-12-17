@@ -267,7 +267,6 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
               itemsToDelete.push(previousAddon.id);
             }
           }
-
           return {
             itemsToUpdate,
             itemsToDelete,
@@ -307,9 +306,7 @@ export const updateVariantAddonGroupInCartWorkflow = createWorkflow(
       input: {
         cart_id: input.cart_id,
         item_id: variantItemToUpdate.id,
-        update: {
-          quantity: variantItemToUpdate.quantity,
-        },
+        update: variantItemToUpdate,
       },
     });
 
