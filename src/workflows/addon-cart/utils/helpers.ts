@@ -81,6 +81,12 @@ export const prepareAddonVariantItem = (data: {
   const addonGroup = addonVariantData.addonGroup;
   return {
     ...item,
+    //[Hardcoded]: require_shipping needs to be false for addons, 
+    // otherwise as the completion of cart requires checking shipping,
+    // and apparently this shipping is check as variant.product, and since variant is null for addons, 
+    // it fails the check
+    // so we are hardcoding it to false, for now until we figure out a better way to handle this
+    requires_shipping:false,
     title: addon.title,
     thumbnail: addon.thumbnail,
     product_id: variant?.product?.id ?? item?.product_id,
